@@ -6,8 +6,12 @@ import { AuthModule } from './modules/auth/auth.module';
 import { BlogsModule } from './modules/blogs/blogs.module';
 import { CareersModule } from './modules/careers/careers.module';
 import { CategoriesModule } from './modules/categories/categories.module';
+import { ContactsModule } from './modules/contact/contacts.module';
 import { EmailModule } from './modules/email/email.module';
+import { EventsModule } from './modules/events/events.module';
 import { HealthModule } from './modules/health/health.module';
+import { ResourcesModule } from './modules/resources/resources.module';
+import { SettingsModule } from './modules/settings/settings.module';
 import { UsersModule } from './modules/users/users.module';
 
 import { validateEnv } from './core/config/app.config';
@@ -28,8 +32,12 @@ import { DbModule } from './core/db/db.module';
     BlogsModule,
     CareersModule,
     CategoriesModule,
+    ContactsModule,
     EmailModule,
+    EventsModule,
     HealthModule,
+    ResourcesModule,
+    SettingsModule,
     UsersModule,
   ],
   controllers: [],
