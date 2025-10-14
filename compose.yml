@@ -1,0 +1,56 @@
+name: creditpro
+services:
+  creditpro-api:
+    container_name: "creditpro-api"
+    image: ghcr.io/claudiusayadi/creditpro-api:latest
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges
+    ports:
+      - 127.0.0.1:$API_PORT:$API_PORT
+    environment:
+      NODE_ENV: $NODE_ENV
+      API_PORT: $API_PORT
+      API_TOKEN: $API_TOKEN
+      TZ: $TZ
+      API_URL: $API_URL
+      PUID: $PUID
+      PGID: $PGID
+      # Database
+      DB_URL: $DB_URL
+      REDIS_HOST: $REDIS_HOST
+      REDIS_PORT: $REDIS_PORT
+      # NOTE: All TTLs are in seconds
+      # JWT
+      JWT_SECRET: $JWT_SECRET
+      JWT_ISSUER: $JWT_ISSUER
+      JWT_AUDIENCE: $JWT_AUDIENCE
+      JWT_ACCESS_TOKEN_TTL: $JWT_ACCESS_TOKEN_TTL
+      JWT_REFRESH_TOKEN_TTL: $JWT_REFRESH_TOKEN_TTL
+      # THROTTLER
+      THROTTLER_TTL: $THROTTLER_TTL
+      THROTTLER_LIMIT: $THROTTLER_LIMIT
+      # Email
+      EMAIL_FROM: $EMAIL_FROM
+      EMAIL_SENDER: $EMAIL_SENDER
+      EMAIL_HOST: $EMAIL_HOST
+      EMAIL_PORT: $EMAIL_PORT
+      EMAIL_USERNAME: $EMAIL_USERNAME
+      EMAIL_PASSWORD: $EMAIL_PASSWORD
+      EMAIL_SECURE: $EMAIL_SECURE
+      VERIFICATION_CODE_TTL: $VERIFICATION_CODE_TTL
+
+    networks:
+      - pg
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:$API_PORT/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  pg:
+    external: true
+  redis:
+    external: true
