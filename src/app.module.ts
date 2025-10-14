@@ -3,6 +3,9 @@ import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 
 import { AuthModule } from './modules/auth/auth.module';
+import { BlogsModule } from './modules/blogs/blogs.module';
+import { CareersModule } from './modules/careers/careers.module';
+import { CategoriesModule } from './modules/categories/categories.module';
 import { EmailModule } from './modules/email/email.module';
 import { HealthModule } from './modules/health/health.module';
 import { UsersModule } from './modules/users/users.module';
@@ -22,6 +25,9 @@ import { DbModule } from './core/db/db.module';
     ThrottlerModule.forRootAsync(throttlerConfig.asProvider()),
     DbModule,
     AuthModule,
+    BlogsModule,
+    CareersModule,
+    CategoriesModule,
     EmailModule,
     HealthModule,
     UsersModule,
