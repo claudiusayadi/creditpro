@@ -8,7 +8,7 @@ import { PaginatedResult } from '../../core/common/interfaces/paginated-result.i
 import { PaginationUtil } from '../../core/common/utils/pagination.util';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
-import { Blog } from './entities/blogs.entity';
+import { Blog } from './entities/blog.entity';
 
 @Injectable()
 export class BlogsService {
@@ -25,14 +25,35 @@ export class BlogsService {
     return await PaginationUtil.paginate(this.postRepo, {
       pagination: query,
       sort: query,
-      relations: { author: true },
+      relations: { author: true, category: true },
+    });
+  }
+
+  public async findPublished(query: QueryDto): Promise<PaginatedResult<Blog>> {
+    return await PaginationUtil.paginate(this.postRepo, {
+      pagination: query,
+      sort: query,
+      where: { published: true },
+      relations: { author: true, category: true },
+    });
+  }
+
+  public async findByCategory(
+    categoryId: string,
+    query: QueryDto,
+  ): Promise<PaginatedResult<Blog>> {
+    return await PaginationUtil.paginate(this.postRepo, {
+      pagination: query,
+      sort: query,
+      where: { category: { id: categoryId }, published: true },
+      relations: { author: true, category: true },
     });
   }
 
   public async findOne(id: string): Promise<Blog> {
     return await this.postRepo.findOneOrFail({
       where: { id },
-      relations: { author: true },
+      relations: { author: true, category: true },
     });
   }
 

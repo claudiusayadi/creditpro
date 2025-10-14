@@ -24,7 +24,7 @@ import type { IRequestUser } from '../users/interfaces/user.interface';
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
-import { Blog } from './entities/blogs.entity';
+import { Blog } from './entities/blog.entity';
 
 @Controller('blogs')
 export class BlogsController {
@@ -52,6 +52,23 @@ export class BlogsController {
   @Get()
   async findAll(@Query() query: QueryDto) {
     return await this.blogsService.findAll(query);
+  }
+
+  @ApiOperation({ summary: 'Get all published blog posts' })
+  @Public()
+  @Get('published')
+  async findPublished(@Query() query: QueryDto) {
+    return await this.blogsService.findPublished(query);
+  }
+
+  @ApiOperation({ summary: 'Get blog posts by category' })
+  @Public()
+  @Get('category/:categoryId')
+  async findByCategory(
+    @Param('categoryId') categoryId: string,
+    @Query() query: QueryDto,
+  ) {
+    return await this.blogsService.findByCategory(categoryId, query);
   }
 
   @ApiOperation({ summary: 'Get a blog post by ID' })
