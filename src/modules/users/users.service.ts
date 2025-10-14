@@ -40,7 +40,6 @@ export class UsersService {
     return await PaginationUtil.paginate(this.usersRepo, {
       pagination: query,
       sort: query,
-      relations: { plan: true },
     });
   }
 
@@ -49,7 +48,6 @@ export class UsersService {
 
     return await this.usersRepo.findOneOrFail({
       where: { id },
-      relations: { plan: true },
     });
   }
 
