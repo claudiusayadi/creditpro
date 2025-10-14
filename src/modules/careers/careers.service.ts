@@ -27,6 +27,14 @@ export class CareersService {
     });
   }
 
+  public async findActive(query: QueryDto): Promise<PaginatedResult<Career>> {
+    return await PaginationUtil.paginate(this.careersRepo, {
+      pagination: query,
+      sort: query,
+      where: { active: true },
+    });
+  }
+
   public async findOne(id: string): Promise<Career> {
     return await this.careersRepo.findOneOrFail({ where: { id } });
   }
@@ -39,11 +47,11 @@ export class CareersService {
     });
 
     if (!updatedCareer) throw new NotFoundException('Career not found');
-    return await this.careersRepo.save(career);
+    return await this.careersRepo.save(updatedCareer);
   }
 
   public async remove(id: string): Promise<void> {
     const career = await this.findOne(id);
-    await this.careersRepo.remove(career);
+    await this.careersRepo.softDelete(career.id);
   }
 }

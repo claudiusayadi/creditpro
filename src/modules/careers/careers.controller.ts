@@ -52,6 +52,13 @@ export class CareersController {
     return await this.careersService.findAll(query);
   }
 
+  @ApiOperation({ summary: 'Get active career postings' })
+  @Public()
+  @Get('active')
+  async findActive(@Query() query: QueryDto) {
+    return await this.careersService.findActive(query);
+  }
+
   @ApiOperation({ summary: 'Get a career posting by ID' })
   @ApiOkResponse({
     description: 'Career posting details',
