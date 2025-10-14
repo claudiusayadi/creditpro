@@ -54,6 +54,14 @@ export class CreateUserDto {
   name?: string;
 
   /**
+   * User avatar URL
+   * @example "https://avatars.githubusercontent.com/u/12345678?v=4"
+   */
+  @IsString()
+  @IsOptional()
+  avatar?: string;
+
+  /**
    * User phone number
    * @example "+2349012345678"
    */

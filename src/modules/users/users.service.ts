@@ -60,9 +60,7 @@ export class UsersService {
 
     const user = await this.usersRepo.preload({
       id,
-      name: dto.name,
-      phone: dto.phone,
-      bio: dto.bio,
+      ...dto,
     });
 
     if (!user) throw new NotFoundException('User not found');
@@ -95,24 +93,4 @@ export class UsersService {
     if (!user.isDeleted) throw new ConflictException('User not deleted');
     return await this.usersRepo.recover(user);
   }
-
-  // // Update user's task limits (used by payment service)
-  // public async updateUserTaskLimits(
-  //   userId: string,
-  //   additionalTasks?: number | null,
-  // ): Promise<User> {
-  //   const user = await this.usersRepo.findOne({
-  //     where: { id: userId },
-  //     relations: { plan: true },
-  //   });
-
-  //   if (!user) throw new NotFoundException('User not found');
-
-  //   // Unlimited plan (Flow) / Qty-based plan (Focus)
-  //   if (additionalTasks === null) user.tasks_left = null;
-  //   else if (additionalTasks !== undefined)
-  //     user.tasks_left = (user.tasks_left || 0) + additionalTasks;
-
-  //   return await this.usersRepo.save(user);
-  // }
 }

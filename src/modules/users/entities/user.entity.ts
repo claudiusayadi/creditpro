@@ -5,12 +5,10 @@ import {
   BeforeUpdate,
   Column,
   Entity,
-  JoinColumn,
-  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { RegistryDates } from 'src/core/common/dto/registry-dates.dto';
+import { RegistryDates } from '../../../core/common/dto/registry-dates.dto';
 import { UserRole } from '../enums/roles.enum';
 
 @Entity('users')
@@ -27,6 +25,9 @@ export class User {
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   name?: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  avatar?: string;
 
   @Column({ type: 'varchar', length: 20, unique: true, nullable: true })
   phone?: string;
