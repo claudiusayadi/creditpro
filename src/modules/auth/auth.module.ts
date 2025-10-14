@@ -24,7 +24,6 @@ import { LocalStrategy } from './strategies/local.strategy';
     ConfigModule.forFeature(emailConfig),
     RedisModule,
     EmailModule,
-    PlansModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],

@@ -40,7 +40,6 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly redisService: RedisService,
     private readonly emailService: EmailService,
-    private readonly plansService: PlansService,
   ) {}
 
   public async validateLocal(dto: AuthDto) {
@@ -83,21 +82,9 @@ export class AuthService {
 
     if (existing) throw new ConflictException('Account already exists!');
 
-    // Assign starter plan
-    const starterPlan = await this.plansService.findOne('', 'starter');
-
-    if (!starterPlan) {
-      this.logger.error('Starter plan not found during signup');
-      throw new Error(
-        'Starter plan not found. Please ensure default plans are seeded.',
-      );
-    }
-
     const user = this.usersRepo.create({
       email,
       password,
-      plan: starterPlan,
-      tasks_left: starterPlan.task_limit,
     });
     const savedUser = await this.usersRepo.save(user);
 
