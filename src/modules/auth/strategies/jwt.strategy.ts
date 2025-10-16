@@ -4,7 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { IPayload } from 'src/core/common/interfaces/payload.interface';
-import { RequestWithCookies } from 'src/core/common/interfaces/request-with-cookies.interface';
+import { IRequestWithCookies } from 'src/core/common/interfaces/request-with-cookies.interface';
 import jwtConfig from 'src/core/config/jwt.config';
 import tokensConfig from 'src/core/config/tokens.config';
 import { AuthService } from '../auth.service';
@@ -31,7 +31,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   private static extractJwtFromCookie(
     this: void,
-    req: RequestWithCookies,
+    req: IRequestWithCookies,
   ): string | null {
     return req.cookies[tokensConfig.access] || null;
   }

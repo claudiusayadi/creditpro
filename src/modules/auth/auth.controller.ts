@@ -24,7 +24,7 @@ import {
 import type { Response } from 'express';
 
 import { IdDto } from 'src/core/common/dto/id.dto';
-import type { RequestWithCookies } from 'src/core/common/interfaces/request-with-cookies.interface';
+import type { IRequestWithCookies } from 'src/core/common/interfaces/request-with-cookies.interface';
 import cookieConfig from 'src/core/config/cookie.config';
 import tokensConfig from 'src/core/config/tokens.config';
 import { jwtCookieHeader } from 'src/core/swagger/jwt-cookie-header';
@@ -96,7 +96,7 @@ export class AuthController {
   @Post('refresh')
   async refresh(
     @ActiveUser() user: IRequestUser,
-    @Req() req: RequestWithCookies,
+    @Req() req: IRequestWithCookies,
     @Res({ passthrough: true }) res: Response,
   ) {
     const refreshToken = req?.cookies[tokensConfig.refresh];
