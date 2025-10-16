@@ -131,74 +131,336 @@ src/
 - Filter-based exception handling
 - Strategy pattern for authentication
 
-## Project setup
+## Prerequisites
+
+Before running this application, ensure you have the following installed:
+
+- **Node.js**: Version 18.x or higher
+- **Yarn**: Package manager (npm also works)
+- **PostgreSQL**: Version 14 or higher
+- **Redis**: Version 6 or higher
+- **Docker & Docker Compose** (optional, for containerized deployment)
+
+## Installation
+
+1. Clone the repository:
 
 ```bash
-$ yarn install
+git clone <repository-url>
+cd creditpro
 ```
 
-## Compile and run the project
+2. Install dependencies:
 
 ```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+yarn install
 ```
 
-## Run tests
+3. Create environment configuration:
 
 ```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+cp .env.example .env
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+4. Configure environment variables in `.env`:
 
 ```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
+# Application
+API_PORT=5156
+NODE_ENV=development
+API_URL=http://localhost:5156
+
+# Database
+DB_URL=postgresql://postgres:password@localhost:5432/creditpro
+
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=
+
+# JWT Configuration
+JWT_SECRET=your-64-char-secret-key-change-in-production
+JWT_ISSUER=CreditPro
+JWT_AUDIENCE=CreditPro
+JWT_ACCESS_EXPIRATION=15m
+JWT_REFRESH_EXPIRATION=7d
+
+# Email (SMTP)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_AUTH_USER=your-email@gmail.com
+SMTP_AUTH_PASS=your-app-password
+SMTP_FROM="CreditPro <noreply@creditpro.com>"
+
+# Security
+THROTTLER_TTL=60
+THROTTLER_LIMIT=10
+VERIFICATION_CODE_TTL=600
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+5. Set up the database:
 
-## Resources
+```bash
+# Create the database
+create the db creditpro
 
-Check out a few resources that may come in handy when working with NestJS:
+# Run migrations
+yarn migration:run
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## Running the Application
 
-## Support
+### Development Mode
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+# Standard development mode
+yarn start:dev
 
-## Stay in touch
+# Debug mode
+yarn start:debug
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+The API will be available at `http://localhost:5156`
+
+### Production Mode
+
+```bash
+# Build the application
+yarn build
+
+# Run production build
+yarn start:prod
+```
+
+### Docker Deployment
+
+```bash
+# Development environment
+docker compose -f compose.dev.yml up
+
+# Production environment
+docker compose compose.yml up -d
+```
+
+## API Documentation
+
+The API documentation is automatically generated using Swagger and is available at:
+
+```
+http://localhost:5156/api/v1/docs
+```
+
+The Swagger UI provides:
+
+- Complete endpoint documentation
+- Request/response schemas
+- Try-it-out functionality for testing endpoints
+- Authentication configuration for protected routes
+
+### API Structure
+
+All endpoints are prefixed with `/api/v1`:
+
+#### Public Endpoints
+
+- `POST /api/v1/auth/signup` - User registration
+- `POST /api/v1/auth/signin` - User authentication
+- `POST /api/v1/auth/verify-email` - Email verification
+- `POST /api/v1/auth/forgot-password` - Request password reset
+- `POST /api/v1/auth/reset-password` - Reset password
+- `GET /api/v1/blogs` - List all blogs
+- `GET /api/v1/blogs/:slug` - Get blog by slug
+- `GET /api/v1/events` - List all events
+- `GET /api/v1/events/:slug` - Get event by slug
+- `GET /api/v1/resources` - List all resources
+- `GET /api/v1/resources/:slug` - Get resource by slug
+- `GET /api/v1/careers` - List all careers
+- `GET /api/v1/careers/:slug` - Get career by slug
+- `POST /api/v1/contact` - Submit contact form
+- `GET /api/v1/health` - Health check
+
+#### Protected Endpoints (Require Authentication)
+
+- `POST /api/v1/auth/refresh` - Refresh access token
+- `POST /api/v1/auth/signout` - Sign out
+- `POST /api/v1/auth/change-password` - Change password
+
+#### Admin-Only Endpoints (Require Admin Role)
+
+- `POST /api/v1/blogs` - Create blog
+- `PATCH /api/v1/blogs/:id` - Update blog
+- `DELETE /api/v1/blogs/:id` - Delete blog
+- `POST /api/v1/events` - Create event
+- `PATCH /api/v1/events/:id` - Update event
+- `DELETE /api/v1/events/:id` - Delete event
+- `POST /api/v1/media/upload` - Upload media
+- `DELETE /api/v1/media/:id` - Delete media
+- `GET /api/v1/dashboard` - View dashboard analytics
+- `GET /api/v1/users` - List all users
+- `PATCH /api/v1/users/:id` - Update user
+
+### Authentication
+
+The API uses JWT tokens stored in HTTP-only cookies:
+
+1. **Sign Up**: Create an account via `/auth/signup`
+2. **Verify Email**: Check email for verification code and verify via `/auth/verify-email`
+3. **Sign In**: Authenticate via `/auth/signin` to receive access and refresh tokens
+4. **Access Protected Routes**: Tokens are automatically included in requests via cookies
+5. **Refresh Token**: Use `/auth/refresh` to obtain new access token when expired
+
+Tokens are automatically managed through secure, HTTP-only cookies:
+
+- `CreditProAccessToken`: Short-lived access token (15 minutes)
+- `CreditProRefreshToken`: Long-lived refresh token (7 days)
+
+## Database
+
+### Schema Management
+
+The application uses TypeORM for database management with migration support.
+
+#### Create a Migration
+
+```bash
+yarn migration:generate -- src/core/db/migrations/MigrationName
+```
+
+#### Run Migrations
+
+```bash
+yarn migration:run
+```
+
+#### Revert Last Migration
+
+```bash
+yarn migration:revert
+```
+
+### Database Schema Overview
+
+Key entities:
+
+- **Users**: User accounts with role-based access
+- **Blogs**: Blog posts with author, category, and media relations
+- **Events**: Events with date ranges and location information
+- **Resources**: Downloadable files with category and media relations
+- **Careers**: Job postings with location and type
+- **Categories**: Taxonomy for organizing content
+- **Media**: Centralized file management with metadata
+- **Contact**: Contact form submissions
+
+All entities include:
+
+- Soft delete support (`deleted_at`)
+- Automatic timestamps (`created_at`, `updated_at`)
+- UUID primary keys
+
+## Security Features
+
+### Rate Limiting
+
+The API implements request throttling to prevent abuse:
+
+- 10 requests per 60-second window by default
+- Configurable via `THROTTLER_TTL` and `THROTTLER_LIMIT` environment variables
+- Applied globally to all endpoints
+
+### Password Security
+
+- Argon2 hashing algorithm for password storage
+- Minimum password requirements enforced at validation layer
+- Secure password reset flow with time-limited codes
+
+### Token Management
+
+- JWT tokens with configurable expiration
+- Refresh token rotation prevents token reuse
+- HTTP-only cookies prevent XSS attacks
+- Secure flag enabled in production
+
+### Input Validation
+
+- All DTOs validated using class-validator
+- File upload validation with MIME type and magic number checking
+- SQL injection prevention through TypeORM parameterized queries
+
+### CORS Configuration
+
+- Configurable allowed origins
+- Credentials support for cookie-based authentication
+- Secure headers via Helmet middleware
+
+## File Storage
+
+The application stores uploaded files in an organized directory structure:
+
+```
+uploads/
+└── YYYY/
+    └── MM/
+        ├── image1.jpg
+        ├── document.pdf
+        └── ...
+```
+
+Files are automatically organized by year and month for easy management and backup. Each file is tracked in the database with metadata including:
+
+- Original filename
+- Generated filename
+- MIME type
+- File size
+- File type (IMAGE, DOCUMENT, PDF)
+- Upload date
+- Alt text and description for accessibility
+
+### Supported File Types
+
+**Images**: PNG, JPG, JPEG, WebP, GIF, SVG
+**Documents**: DOC, DOCX, TXT, RTF
+**PDFs**: PDF
+
+## Project Structure
+
+```
+creditpro/
+├── src/
+│   ├── core/
+│   │   ├── common/          # Shared utilities and DTOs
+│   │   ├── config/          # Configuration files
+│   │   ├── db/              # Database connection and migrations
+│   │   ├── redis/           # Redis connection
+│   │   └── swagger/         # API documentation schemas
+│   ├── modules/
+│   │   ├── auth/            # Authentication and authorization
+│   │   ├── blogs/           # Blog management
+│   │   ├── careers/         # Career postings
+│   │   ├── categories/      # Content categorization
+│   │   ├── contact/         # Contact form handling
+│   │   ├── dashboard/       # Administrative dashboard
+│   │   ├── email/           # Email service
+│   │   ├── events/          # Event management
+│   │   ├── health/          # Health checks
+│   │   ├── media/           # Media management
+│   │   ├── resources/       # Resource management
+│   │   └── users/           # User management
+│   ├── app.module.ts        # Root application module
+│   └── main.ts              # Application entry point
+├── test/                    # E2E tests
+├── uploads/                 # File storage (not in git)
+├── scripts/                 # Utility scripts
+├── public/                  # Static assets
+├── compose.yml              # Production Docker Compose
+├── compose.dev.yml          # Development Docker Compose
+├── Dockerfile               # Multi-stage Docker build
+├── .env.example             # Environment variable template
+├── tsconfig.json            # TypeScript configuration
+└── package.json             # Project dependencies
+
+```
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is licensed under the MIT License.
