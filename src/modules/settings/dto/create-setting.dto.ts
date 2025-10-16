@@ -29,4 +29,3 @@ export class CreateSettingDto {
   @IsOptional()
   is_public?: boolean = false;
 }
-

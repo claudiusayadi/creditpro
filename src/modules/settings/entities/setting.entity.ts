@@ -25,4 +25,3 @@ export class Setting {
   @Column(() => RegistryDates, { prefix: false })
   registry: RegistryDates;
 }
-

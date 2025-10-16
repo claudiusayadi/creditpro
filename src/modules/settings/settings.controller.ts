@@ -99,4 +99,3 @@ export class SettingsController {
     return { message: 'Setting deleted successfully' };
   }
 }
-

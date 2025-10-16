@@ -7,8 +7,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { QueryDto } from 'src/core/common/dto/query.dto';
-import type { PaginatedResult } from 'src/core/common/interfaces/paginated-result.interface';
-import { PaginationUtil } from 'src/core/common/utils/pagination.util';
+import type { IPaginatedResult } from 'src/core/common/interfaces/paginated-result.interface';
+import { QB } from 'src/core/common/utils/query-builder.util';
 import type { CreateSettingDto } from './dto/create-setting.dto';
 import type { UpdateSettingDto } from './dto/update-setting.dto';
 import { Setting } from './entities/setting.entity';
@@ -35,10 +35,9 @@ export class SettingsService {
     return await this.settingRepo.save(setting);
   }
 
-  async findAll(query: QueryDto): Promise<PaginatedResult<Setting>> {
-    return await PaginationUtil.paginate(this.settingRepo, {
-      pagination: query,
-      sort: query,
+  async findAll(query: QueryDto): Promise<IPaginatedResult<Setting>> {
+    return await QB.paginate(this.settingRepo, query, {
+      defaultSearchFields: ['key', 'value', 'group', 'description'],
     });
   }
 
