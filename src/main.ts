@@ -1,18 +1,20 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
+import { join } from 'path';
 
-import helmetConfig from 'src/core/config/helmet.config';
+import corsConfig from 'src/core/config/cors.config';
 import * as pkg from '../package.json';
 import { AppModule } from './app.module';
 import { ApiConfig } from './core/config/app.config';
+import helmetConfig from './core/config/helmet.config';
 import tokensConfig from './core/config/tokens.config';
-import corsConfig from 'src/core/config/cors.config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const logger = new Logger(bootstrap.name);
 
   const env = ApiConfig.NODE_ENV;
@@ -25,6 +27,11 @@ async function bootstrap() {
   app.enableCors(corsConfig);
   app.use(cookieParser());
   app.setGlobalPrefix(prefix);
+
+  // Serve static files from uploads directory
+  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+    prefix: '/assets/',
+  });
 
   const config = new DocumentBuilder()
     .setTitle(title)

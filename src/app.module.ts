@@ -10,6 +10,7 @@ import { ContactsModule } from './modules/contact/contacts.module';
 import { EmailModule } from './modules/email/email.module';
 import { EventsModule } from './modules/events/events.module';
 import { HealthModule } from './modules/health/health.module';
+import { MediaModule } from './modules/media/media.module';
 import { ResourcesModule } from './modules/resources/resources.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { UsersModule } from './modules/users/users.module';
@@ -18,6 +19,7 @@ import { validateEnv } from './core/config/app.config';
 import { apiProviders } from './core/config/providers.config';
 import throttlerConfig from './core/config/throttler.config';
 import { DbModule } from './core/db/db.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -36,9 +38,11 @@ import { DbModule } from './core/db/db.module';
     EmailModule,
     EventsModule,
     HealthModule,
+    MediaModule,
     ResourcesModule,
     SettingsModule,
     UsersModule,
+    DashboardModule,
   ],
   controllers: [],
   providers: [...apiProviders],

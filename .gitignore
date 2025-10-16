@@ -4,6 +4,9 @@
 /build
 /public
 
+# Uploaded files
+/uploads
+
 # Logs
 logs
 *.log
