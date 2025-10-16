@@ -46,6 +46,14 @@ export class User {
   @Column({ type: 'timestamp', nullable: true })
   verification_code_expires_at?: Date;
 
+  @Exclude()
+  @Column({ type: 'varchar', length: 6, nullable: true })
+  password_reset_code?: string;
+
+  @Exclude()
+  @Column({ type: 'timestamp', nullable: true })
+  password_reset_code_expires_at?: Date;
+
   @Column({
     type: 'enum',
     enum: UserRole,
