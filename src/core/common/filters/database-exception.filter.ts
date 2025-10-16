@@ -3,13 +3,13 @@ import { BaseExceptionFilter } from '@nestjs/core';
 import { Response } from 'express';
 import { QueryFailedError } from 'typeorm';
 
-import { DatabaseError } from '../interfaces/database-error.interface';
+import { IDatabaseError } from '../interfaces/database-error.interface';
 import { HttpError } from '../utils/http-error.util';
 import { extractFromText } from '../utils/regex.util';
 
 @Catch(QueryFailedError)
 export class DatabaseExceptionFilter extends BaseExceptionFilter {
-  catch(exception: DatabaseError, host: ArgumentsHost) {
+  catch(exception: IDatabaseError, host: ArgumentsHost) {
     const response = host.switchToHttp().getResponse<Response>();
 
     const { code, detail, table } = exception;
