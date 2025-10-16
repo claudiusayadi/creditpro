@@ -70,10 +70,7 @@ export class EventsController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Update an event (Admin only)' })
-  async update(
-    @Param() { id }: IdDto,
-    @Body() updateEventDto: UpdateEventDto,
-  ) {
+  async update(@Param() { id }: IdDto, @Body() updateEventDto: UpdateEventDto) {
     return await this.eventsService.update(id, updateEventDto);
   }
 
@@ -87,4 +84,3 @@ export class EventsController {
     return { message: 'Event deleted successfully' };
   }
 }
-

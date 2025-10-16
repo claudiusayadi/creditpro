@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThanOrEqual, Repository } from 'typeorm';
 
 import { QueryDto } from 'src/core/common/dto/query.dto';
-import type { PaginatedResult } from 'src/core/common/interfaces/paginated-result.interface';
-import { PaginationUtil } from 'src/core/common/utils/pagination.util';
+import type { IPaginatedResult } from 'src/core/common/interfaces/paginated-result.interface';
+import { QB } from 'src/core/common/utils/query-builder.util';
 import type { CreateEventDto } from './dto/create-event.dto';
 import type { UpdateEventDto } from './dto/update-event.dto';
 import { Event } from './entities/event.entity';
@@ -21,26 +21,23 @@ export class EventsService {
     return await this.eventRepo.save(event);
   }
 
-  async findAll(query: QueryDto): Promise<PaginatedResult<Event>> {
-    return await PaginationUtil.paginate(this.eventRepo, {
-      pagination: query,
-      sort: query,
+  async findAll(query: QueryDto): Promise<IPaginatedResult<Event>> {
+    return await QB.paginate(this.eventRepo, query, {
+      defaultSearchFields: ['title', 'description', 'location'],
     });
   }
 
-  async findPublished(query: QueryDto): Promise<PaginatedResult<Event>> {
-    return await PaginationUtil.paginate(this.eventRepo, {
-      pagination: query,
-      sort: query,
-      where: { published: true },
+  async findPublished(query: QueryDto): Promise<IPaginatedResult<Event>> {
+    return await QB.paginate(this.eventRepo, query, {
+      defaultSearchFields: ['title', 'description', 'location'],
+      additionalWhere: { published: true },
     });
   }
 
-  async findUpcoming(query: QueryDto): Promise<PaginatedResult<Event>> {
-    return await PaginationUtil.paginate(this.eventRepo, {
-      pagination: query,
-      sort: query,
-      where: {
+  async findUpcoming(query: QueryDto): Promise<IPaginatedResult<Event>> {
+    return await QB.paginate(this.eventRepo, query, {
+      defaultSearchFields: ['title', 'description', 'location'],
+      additionalWhere: {
         published: true,
         start_date: MoreThanOrEqual(new Date()),
       },
@@ -83,4 +80,3 @@ export class EventsService {
     await this.eventRepo.softDelete(event.id);
   }
 }
-

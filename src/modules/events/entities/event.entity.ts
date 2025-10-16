@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 import { RegistryDates } from '../../../core/common/dto/registry-dates.dto';
 
@@ -37,4 +37,3 @@ export class Event {
   @Column(() => RegistryDates, { prefix: false })
   registry: RegistryDates;
 }
-
