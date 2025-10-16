@@ -1,12 +1,9 @@
 import {
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
-  IsUrl,
   IsUUID,
   MaxLength,
-  Min,
 } from 'class-validator';
 
 import { IsBoolean } from '../../../core/common/decorators/is-boolean.decorator';
@@ -43,35 +40,14 @@ export class CreateResourceDto {
   @MaxLength(100)
   type: string;
 
-  /**
-   * Resource file URL
-   * @example "https://example.com/file.pdf"
-   */
-  @IsUrl({}, { message: 'Invalid file URL.' })
-  @IsNotEmpty({ message: 'File URL is required.' })
-  file_url: string;
+  @IsUUID()
+  @IsNotEmpty({ message: 'File ID is required.' })
+  file_id: string;
 
-  /**
-   * Resource thumbnail URL
-   * @example "https://example.com/thumbnail.jpg"
-   */
-  @IsUrl({}, { message: 'Invalid thumbnail URL.' })
+  @IsUUID()
   @IsOptional()
-  thumbnail_url?: string;
+  thumbnail_id?: string;
 
-  /**
-   * Resource file size in bytes
-   * @example 1024
-   */
-  @IsNumber()
-  @Min(0)
-  @IsOptional()
-  file_size?: number;
-
-  /**
-   * Resource category ID
-   * @example "123e4567-e89b-12d3-a456-426614174000"
-   */
   @IsUUID()
   @IsOptional()
   category_id?: string;

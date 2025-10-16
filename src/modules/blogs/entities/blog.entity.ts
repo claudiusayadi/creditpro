@@ -8,6 +8,7 @@ import {
 
 import { RegistryDates } from '../../../core/common/dto/registry-dates.dto';
 import { Category } from '../../categories/entities/category.entity';
+import { Media } from '../../media/entities/media.entity';
 import { User } from '../../users/entities/user.entity';
 
 @Entity('blogs')
@@ -24,8 +25,9 @@ export class Blog {
   @Column({ type: 'varchar', length: 255 })
   slug: string;
 
-  @Column({ type: 'varchar', length: 500, nullable: true })
-  image_url?: string;
+  @ManyToOne(() => Media, { nullable: true })
+  @JoinColumn({ name: 'image_id' })
+  image?: Media;
 
   @Column({ type: 'text', nullable: true })
   excerpt?: string;

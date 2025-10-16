@@ -58,9 +58,7 @@ export class MediaController {
     @UploadedFile() file: Express.Multer.File,
     @Body() dto: UploadFileDto,
   ): Promise<Media> {
-    if (!file) {
-      throw new BadRequestException('No file provided');
-    }
+    if (!file) throw new BadRequestException('No file provided');
 
     return await this.mediaService.create(file, dto);
   }
@@ -87,10 +85,7 @@ export class MediaController {
   }
 
   @ApiOperation({ summary: 'Get all media files' })
-  @ApiOkResponse({
-    description: 'List of media files',
-    type: [Media],
-  })
+  @ApiOkResponse({ description: 'List of media files', type: [Media] })
   @Public()
   @Get()
   async findAll(@Query() query: QueryDto) {
@@ -122,7 +117,7 @@ export class MediaController {
     type: [Media],
   })
   @Public()
-  @Get('/:year/:month')
+  @Get(':year/:month')
   async findByDate(
     @Param('year') year: string,
     @Param('month') month: string,
@@ -132,10 +127,7 @@ export class MediaController {
   }
 
   @ApiOperation({ summary: 'Get a media file by ID' })
-  @ApiOkResponse({
-    description: 'Media file details',
-    type: Media,
-  })
+  @ApiOkResponse({ description: 'Media file details', type: Media })
   @ApiNotFoundResponse({ description: 'Media file not found' })
   @Public()
   @Get(':id')

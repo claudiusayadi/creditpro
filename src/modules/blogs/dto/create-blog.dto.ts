@@ -3,7 +3,6 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUrl,
   IsUUID,
 } from 'class-validator';
 
@@ -32,9 +31,9 @@ export class CreateBlogDto {
   @IsOptional()
   slug?: string;
 
-  @IsUrl({}, { message: 'Invalid image URL.' })
+  @IsUUID()
   @IsOptional()
-  image_url?: string;
+  image_id?: string;
 
   @IsString()
   @IsOptional()

@@ -12,7 +12,6 @@ import { EventsModule } from './modules/events/events.module';
 import { HealthModule } from './modules/health/health.module';
 import { MediaModule } from './modules/media/media.module';
 import { ResourcesModule } from './modules/resources/resources.module';
-import { SettingsModule } from './modules/settings/settings.module';
 import { UsersModule } from './modules/users/users.module';
 
 import { validateEnv } from './core/config/app.config';
@@ -40,7 +39,6 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     HealthModule,
     MediaModule,
     ResourcesModule,
-    SettingsModule,
     UsersModule,
     DashboardModule,
   ],

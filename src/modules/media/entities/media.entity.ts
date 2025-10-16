@@ -15,9 +15,6 @@ export class Media {
   original_filename: string;
 
   @Column({ type: 'varchar', length: 500 })
-  file_path: string;
-
-  @Column({ type: 'varchar', length: 500 })
   url: string;
 
   @Column({ type: 'varchar', length: 100 })

@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsString,
   IsUrl,
+  IsUUID,
   MaxLength,
 } from 'class-validator';
 
@@ -64,18 +65,10 @@ export class CreateEventDto {
   @IsOptional()
   end_date?: Date;
 
-  /**
-   * Event image URL
-   * @example "https://example.com/image.jpg"
-   */
-  @IsUrl({}, { message: 'Invalid image URL.' })
+  @IsUUID()
   @IsOptional()
-  image_url?: string;
+  image_id?: string;
 
-  /**
-   * Event registration URL
-   * @example "https://example.com/register"
-   */
   @IsUrl({}, { message: 'Invalid registration URL.' })
   @IsOptional()
   registration_url?: string;

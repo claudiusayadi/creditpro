@@ -13,6 +13,7 @@ import { Repository } from 'typeorm';
 import { QueryDto } from 'src/core/common/dto/query.dto';
 import type { IPaginatedResult } from 'src/core/common/interfaces/paginated-result.interface';
 import { QB } from 'src/core/common/utils/query-builder.util';
+import { ApiConfig } from '../../core/config/app.config';
 import { getMediaType } from './config/multer.config';
 import type { UpdateMediaDto } from './dto/update-media.dto';
 import type { UploadFileDto } from './dto/upload-file.dto';
@@ -22,6 +23,7 @@ import { FileValidationService } from './validators/file-validation.service';
 
 @Injectable()
 export class MediaService {
+  private baseUrl = ApiConfig.API_URL;
   constructor(
     @InjectRepository(Media)
     private readonly mediaRepo: Repository<Media>,
@@ -29,13 +31,8 @@ export class MediaService {
     private readonly fileValidationService: FileValidationService,
   ) {}
 
-  /**
-   * Create media record after file upload
-   */
   async create(file: Express.Multer.File, dto?: UploadFileDto): Promise<Media> {
     try {
-      const baseUrl =
-        this.configService.get<string>('APP_URL') || 'http://localhost:3000';
       const ext = extname(file.originalname);
       const mediaType = getMediaType(ext);
 
@@ -47,8 +44,7 @@ export class MediaService {
       const media = this.mediaRepo.create({
         filename: file.filename,
         original_filename: file.originalname,
-        file_path: file.path,
-        url: `${baseUrl}/${file.path}`,
+        url: `${this.baseUrl}/${file.path}`,
         mime_type: file.mimetype,
         size: file.size,
         type: mediaType as MediaType,
@@ -69,9 +65,6 @@ export class MediaService {
     }
   }
 
-  /**
-   * Upload multiple files
-   */
   async createMultiple(
     files: Express.Multer.File[],
     dto?: UploadFileDto,
@@ -86,18 +79,12 @@ export class MediaService {
     return uploadedMedia;
   }
 
-  /**
-   * Get all media with pagination and filtering
-   */
   async findAll(query: QueryDto): Promise<IPaginatedResult<Media>> {
     return await QB.paginate(this.mediaRepo, query, {
       defaultSearchFields: ['original_filename', 'alt_text', 'description'],
     });
   }
 
-  /**
-   * Get media by type
-   */
   async findByType(
     type: MediaType,
     query: QueryDto,
@@ -108,9 +95,6 @@ export class MediaService {
     });
   }
 
-  /**
-   * Get media by year and month
-   */
   async findByDate(
     year: string,
     month: string,
@@ -122,22 +106,10 @@ export class MediaService {
     });
   }
 
-  /**
-   * Get single media by ID
-   */
   async findOne(id: string): Promise<Media> {
-    const media = await this.mediaRepo.findOne({ where: { id } });
-
-    if (!media) {
-      throw new NotFoundException(`Media with ID ${id} not found`);
-    }
-
-    return media;
+    return await this.mediaRepo.findOneOrFail({ where: { id } });
   }
 
-  /**
-   * Update media metadata
-   */
   async update(id: string, dto: UpdateMediaDto): Promise<Media> {
     const media = await this.findOne(id);
 
@@ -146,45 +118,33 @@ export class MediaService {
       ...dto,
     });
 
-    if (!updatedMedia) {
-      throw new NotFoundException('Media not found');
-    }
+    if (!updatedMedia) throw new NotFoundException('Media not found');
 
     return await this.mediaRepo.save(updatedMedia);
   }
 
-  /**
-   * Delete media file and record
-   */
   async remove(id: string): Promise<void> {
     const media = await this.findOne(id);
 
-    // Delete physical file
-    if (existsSync(media.file_path)) {
+    const filePath = media.url.replace(this.baseUrl, '').substring(1);
+
+    if (existsSync(filePath)) {
       try {
-        await unlink(media.file_path);
+        await unlink(filePath);
       } catch (error) {
-        // Log error but continue with database deletion
-        console.error(`Failed to delete file: ${media.file_path}`, error);
+        console.error(`Failed to delete file: ${filePath}`, error);
       }
     }
 
-    // Soft delete from database
     await this.mediaRepo.softDelete(media.id);
   }
 
-  /**
-   * Delete multiple media files
-   */
   async removeMultiple(ids: string[]): Promise<void> {
     for (const id of ids) {
       await this.remove(id);
     }
   }
 
-  /**
-   * Get media statistics
-   */
   async getStats(): Promise<{
     total: number;
     images: number;

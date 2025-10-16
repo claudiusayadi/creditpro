@@ -8,6 +8,7 @@ import {
 
 import { RegistryDates } from '../../../core/common/dto/registry-dates.dto';
 import { Category } from '../../categories/entities/category.entity';
+import { Media } from '../../media/entities/media.entity';
 
 @Entity('resources')
 export class Resource {
@@ -26,14 +27,13 @@ export class Resource {
   @Column({ type: 'varchar', length: 100 })
   type: string;
 
-  @Column({ type: 'varchar', length: 500 })
-  file_url: string;
+  @ManyToOne(() => Media, { nullable: false })
+  @JoinColumn({ name: 'file_id' })
+  file: Media;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  thumbnail_url?: string;
-
-  @Column({ type: 'bigint', nullable: true })
-  file_size?: number;
+  @ManyToOne(() => Media, { nullable: true })
+  @JoinColumn({ name: 'thumbnail_id' })
+  thumbnail?: Media;
 
   @ManyToOne(() => Category, { nullable: true })
   @JoinColumn({ name: 'category_id' })

@@ -1,6 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 import { RegistryDates } from '../../../core/common/dto/registry-dates.dto';
+import { Media } from '../../media/entities/media.entity';
 
 @Entity('events')
 export class Event {
@@ -25,8 +32,9 @@ export class Event {
   @Column({ type: 'timestamp', nullable: true })
   end_date?: Date;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  image_url?: string;
+  @ManyToOne(() => Media, { nullable: true })
+  @JoinColumn({ name: 'image_id' })
+  image?: Media;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   registration_url?: string;
