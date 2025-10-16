@@ -1,3 +1,3 @@
-export interface RequestWithCookies extends Request {
+export interface IRequestWithCookies extends Request {
   cookies: Record<string, string>;
 }

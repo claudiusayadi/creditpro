@@ -1,9 +1,9 @@
-export interface PaginatedResult<T> {
+export interface IPaginatedResult<T> {
   data: T[];
   meta: {
-    page: number;
-    limit: number;
-    total: number;
+    currentPage: number;
+    items: number;
+    totalItems: number;
     totalPages: number;
     hasNextPage: boolean;
     hasPreviousPage: boolean;

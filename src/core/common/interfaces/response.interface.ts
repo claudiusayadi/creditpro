@@ -1,12 +1,12 @@
-export interface ApiResponse<T = unknown> {
+export interface IApiResponse<T = unknown> {
   code?: number;
   status: string;
   data?: T;
   results?: number;
   meta?: {
-    page: number;
-    limit: number;
-    total: number;
+    currentPage: number;
+    items: number;
+    totalItems: number;
     totalPages: number;
     hasNextPage: boolean;
     hasPreviousPage: boolean;
