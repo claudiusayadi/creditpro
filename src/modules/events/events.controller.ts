@@ -13,6 +13,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { IdDto } from 'src/core/common/dto/id.dto';
 import { QueryDto } from 'src/core/common/dto/query.dto';
+import { Public } from 'src/modules/auth/decorators/public.decorator';
 import { Roles } from 'src/modules/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 import { RoleGuard } from 'src/modules/auth/guards/role.guard';
@@ -36,30 +37,42 @@ export class EventsController {
   }
 
   @Get()
+  @Public()
   @ApiOperation({ summary: 'Get all events' })
   async findAll(@Query() query: QueryDto) {
     return await this.eventsService.findAll(query);
   }
 
   @Get('published')
+  @Public()
   @ApiOperation({ summary: 'Get all published events' })
   async findPublished(@Query() query: QueryDto) {
     return await this.eventsService.findPublished(query);
   }
 
   @Get('upcoming')
+  @Public()
   @ApiOperation({ summary: 'Get upcoming published events' })
   async findUpcoming(@Query() query: QueryDto) {
     return await this.eventsService.findUpcoming(query);
   }
 
   @Get('featured')
+  @Public()
   @ApiOperation({ summary: 'Get featured upcoming events' })
   async findFeatured() {
     return await this.eventsService.findFeatured();
   }
 
+  @Get('slug/:slug')
+  @Public()
+  @ApiOperation({ summary: 'Get an event by slug' })
+  async findBySlug(@Param('slug') slug: string) {
+    return await this.eventsService.findBySlug(slug);
+  }
+
   @Get(':id')
+  @Public()
   @ApiOperation({ summary: 'Get an event by ID' })
   async findOne(@Param() { id }: IdDto) {
     return await this.eventsService.findOne(id);

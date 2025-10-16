@@ -13,6 +13,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { IdDto } from 'src/core/common/dto/id.dto';
 import { QueryDto } from 'src/core/common/dto/query.dto';
+import { Public } from 'src/modules/auth/decorators/public.decorator';
 import { Roles } from 'src/modules/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 import { RoleGuard } from 'src/modules/auth/guards/role.guard';
@@ -36,18 +37,21 @@ export class ResourcesController {
   }
 
   @Get()
+  @Public()
   @ApiOperation({ summary: 'Get all resources' })
   async findAll(@Query() query: QueryDto) {
     return await this.resourcesService.findAll(query);
   }
 
   @Get('published')
+  @Public()
   @ApiOperation({ summary: 'Get all published resources' })
   async findPublished(@Query() query: QueryDto) {
     return await this.resourcesService.findPublished(query);
   }
 
   @Get('category/:categoryId')
+  @Public()
   @ApiOperation({ summary: 'Get resources by category' })
   async findByCategory(
     @Param('categoryId') categoryId: string,
@@ -57,18 +61,28 @@ export class ResourcesController {
   }
 
   @Get('type/:type')
+  @Public()
   @ApiOperation({ summary: 'Get resources by type' })
   async findByType(@Param('type') type: string, @Query() query: QueryDto) {
     return await this.resourcesService.findByType(type, query);
   }
 
+  @Get('slug/:slug')
+  @Public()
+  @ApiOperation({ summary: 'Get a resource by slug' })
+  async findBySlug(@Param('slug') slug: string) {
+    return await this.resourcesService.findBySlug(slug);
+  }
+
   @Get(':id')
+  @Public()
   @ApiOperation({ summary: 'Get a resource by ID' })
   async findOne(@Param() { id }: IdDto) {
     return await this.resourcesService.findOne(id);
   }
 
   @Post(':id/download')
+  @Public()
   @ApiOperation({ summary: 'Increment download count for a resource' })
   async incrementDownload(@Param() { id }: IdDto) {
     await this.resourcesService.incrementDownloadCount(id);

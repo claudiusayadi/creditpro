@@ -10,6 +10,14 @@ export class CreateCategoryDto {
   name: string;
 
   /**
+   * Category slug (auto-generated from name if not provided)
+   * @example "technology"
+   */
+  @IsString()
+  @IsOptional()
+  slug?: string;
+
+  /**
    * Category description
    * @example "Articles related to technology"
    */

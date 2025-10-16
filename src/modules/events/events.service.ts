@@ -5,6 +5,7 @@ import { MoreThanOrEqual, Repository } from 'typeorm';
 import { QueryDto } from 'src/core/common/dto/query.dto';
 import type { IPaginatedResult } from 'src/core/common/interfaces/paginated-result.interface';
 import { QB } from 'src/core/common/utils/query-builder.util';
+import { slugify } from 'src/core/common/utils/slugify';
 import type { CreateEventDto } from './dto/create-event.dto';
 import type { UpdateEventDto } from './dto/update-event.dto';
 import { Event } from './entities/event.entity';
@@ -17,7 +18,8 @@ export class EventsService {
   ) {}
 
   async create(dto: CreateEventDto): Promise<Event> {
-    const event = this.eventRepo.create(dto);
+    const slug = dto.slug || slugify(dto.title);
+    const event = this.eventRepo.create({ ...dto, slug });
     return await this.eventRepo.save(event);
   }
 
@@ -64,9 +66,26 @@ export class EventsService {
     return event;
   }
 
+  async findBySlug(slug: string): Promise<Event> {
+    const event = await this.eventRepo.findOne({ where: { slug } });
+    if (!event) {
+      throw new NotFoundException(`Event with slug ${slug} not found`);
+    }
+    return event;
+  }
+
   async update(id: string, dto: UpdateEventDto): Promise<Event> {
     const event = await this.findOne(id);
-    const updated = await this.eventRepo.preload({ id: event.id, ...dto });
+
+    const updateData = { ...dto };
+    if (dto.slug) {
+      updateData.slug = dto.slug;
+    }
+
+    const updated = await this.eventRepo.preload({
+      id: event.id,
+      ...updateData,
+    });
 
     if (!updated) {
       throw new NotFoundException(`Event with ID ${id} not found`);

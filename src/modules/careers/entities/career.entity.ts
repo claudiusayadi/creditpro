@@ -10,6 +10,9 @@ export class Career {
   @Column({ type: 'varchar', length: 255 })
   title: string;
 
+  @Column({ type: 'varchar', length: 255, unique: true })
+  slug: string;
+
   @Column({ type: 'text' })
   description: string;
 

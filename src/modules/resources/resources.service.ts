@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { QueryDto } from 'src/core/common/dto/query.dto';
 import type { IPaginatedResult } from 'src/core/common/interfaces/paginated-result.interface';
 import { QB } from 'src/core/common/utils/query-builder.util';
+import { slugify } from 'src/core/common/utils/slugify';
 import type { CreateResourceDto } from './dto/create-resource.dto';
 import type { UpdateResourceDto } from './dto/update-resource.dto';
 import { Resource } from './entities/resource.entity';
@@ -17,7 +18,8 @@ export class ResourcesService {
   ) {}
 
   async create(dto: CreateResourceDto): Promise<Resource> {
-    const resource = this.resourceRepo.create(dto);
+    const slug = dto.slug || slugify(dto.title);
+    const resource = this.resourceRepo.create({ ...dto, slug });
     return await this.resourceRepo.save(resource);
   }
 
@@ -71,11 +73,30 @@ export class ResourcesService {
     return resource;
   }
 
+  async findBySlug(slug: string): Promise<Resource> {
+    const resource = await this.resourceRepo.findOne({
+      where: { slug },
+      relations: { category: true },
+    });
+
+    if (!resource) {
+      throw new NotFoundException(`Resource with slug ${slug} not found`);
+    }
+
+    return resource;
+  }
+
   async update(id: string, dto: UpdateResourceDto): Promise<Resource> {
     const resource = await this.findOne(id);
+
+    const updateData = { ...dto };
+    if (dto.slug) {
+      updateData.slug = dto.slug;
+    }
+
     const updated = await this.resourceRepo.preload({
       id: resource.id,
-      ...dto,
+      ...updateData,
     });
 
     if (!updated) {

@@ -17,6 +17,11 @@ export class CreateResourceDto {
   title: string;
 
   @IsString()
+  @IsOptional()
+  @MaxLength(255)
+  slug?: string;
+
+  @IsString()
   @IsNotEmpty({ message: 'Description is required.' })
   description: string;
 

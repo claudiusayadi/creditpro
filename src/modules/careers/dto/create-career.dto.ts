@@ -1,18 +1,14 @@
 import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateCareerDto {
-  /**
-   * Job title
-   * @example "Software Engineer"
-   */
   @IsString()
   @IsNotEmpty({ message: 'Title is required.' })
   title: string;
 
-  /**
-   * Job description
-   * @example "We are looking for a skilled software engineer..."
-   */
+  @IsString()
+  @IsOptional()
+  slug?: string;
+
   @IsString()
   @IsNotEmpty({ message: 'Description is required.' })
   description: string;

@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { QueryDto } from '../../core/common/dto/query.dto';
 import { IPaginatedResult } from '../../core/common/interfaces/paginated-result.interface';
 import { QB } from '../../core/common/utils/query-builder.util';
+import { slugify } from '../../core/common/utils/slugify';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
@@ -17,7 +18,8 @@ export class CategoriesService {
   ) {}
 
   public async create(dto: CreateCategoryDto): Promise<Category> {
-    const category = this.categoryRepo.create(dto);
+    const slug = dto.slug || slugify(dto.name);
+    const category = this.categoryRepo.create({ ...dto, slug });
     return await this.categoryRepo.save(category);
   }
 
@@ -31,15 +33,23 @@ export class CategoriesService {
     return await this.categoryRepo.findOneOrFail({ where: { id } });
   }
 
+  public async findBySlug(slug: string): Promise<Category> {
+    return await this.categoryRepo.findOneOrFail({ where: { slug } });
+  }
+
   public async update(id: string, dto: UpdateCategoryDto): Promise<Category> {
     const category = await this.findOne(id);
+
+    const updateData = { ...dto };
+    if (dto.slug) updateData.slug = dto.slug;
+
     const updatedCategory = await this.categoryRepo.preload({
       id: category.id,
-      ...dto,
+      ...updateData,
     });
 
     if (!updatedCategory) throw new NotFoundException('Category not found');
-    return await this.categoryRepo.save(category);
+    return await this.categoryRepo.save(updatedCategory);
   }
 
   public async remove(id: string): Promise<void> {

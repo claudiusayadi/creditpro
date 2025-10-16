@@ -26,7 +26,6 @@ import { CreateCareerDto } from './dto/create-career.dto';
 import { UpdateCareerDto } from './dto/update-career.dto';
 import { Career } from './entities/career.entity';
 
-@Roles(UserRole.ADMIN)
 @Controller('careers')
 export class CareersController {
   constructor(private readonly careersService: CareersService) {}
@@ -36,6 +35,7 @@ export class CareersController {
     description: 'Career posting created successfully',
     type: Career,
   })
+  @Roles(UserRole.ADMIN)
   @Post()
   async create(@Body() dto: CreateCareerDto): Promise<Career> {
     return await this.careersService.create(dto);
@@ -59,6 +59,18 @@ export class CareersController {
     return await this.careersService.findActive(query);
   }
 
+  @ApiOperation({ summary: 'Get a career posting by slug' })
+  @ApiOkResponse({
+    description: 'Career posting details',
+    type: Career,
+  })
+  @ApiNotFoundResponse({ description: 'Career posting not found' })
+  @Public()
+  @Get('slug/:slug')
+  async findBySlug(@Param('slug') slug: string): Promise<Career> {
+    return await this.careersService.findBySlug(slug);
+  }
+
   @ApiOperation({ summary: 'Get a career posting by ID' })
   @ApiOkResponse({
     description: 'Career posting details',
@@ -77,6 +89,7 @@ export class CareersController {
     type: Career,
   })
   @ApiNotFoundResponse({ description: 'Career posting not found' })
+  @Roles(UserRole.ADMIN)
   @Patch(':id')
   async update(
     @Param() params: IdDto,
@@ -88,6 +101,7 @@ export class CareersController {
   @ApiOperation({ summary: 'Delete a career posting' })
   @ApiNoContentResponse({ description: 'Career posting deleted successfully' })
   @ApiNotFoundResponse({ description: 'Career posting not found' })
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   async remove(@Param() params: IdDto): Promise<void> {
     return await this.careersService.remove(params.id);

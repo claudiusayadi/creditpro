@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { QueryDto } from '../../core/common/dto/query.dto';
 import { IPaginatedResult } from '../../core/common/interfaces/paginated-result.interface';
 import { QB } from '../../core/common/utils/query-builder.util';
+import { slugify } from '../../core/common/utils/slugify';
 import { IRequestUser } from '../users/interfaces/user.interface';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
@@ -17,7 +18,8 @@ export class BlogsService {
   ) {}
 
   public async create(dto: CreateBlogDto, author: IRequestUser): Promise<Blog> {
-    const blog = this.postRepo.create({ ...dto, author });
+    const slug = dto.slug || slugify(dto.title);
+    const blog = this.postRepo.create({ ...dto, slug, author });
     return await this.postRepo.save(blog);
   }
 
@@ -32,6 +34,14 @@ export class BlogsService {
     return await QB.paginate(this.postRepo, query, {
       defaultSearchFields: ['title', 'content'],
       additionalWhere: { published: true },
+      additionalRelations: ['author', 'category'],
+    });
+  }
+
+  public async findFeatured(query: QueryDto): Promise<IPaginatedResult<Blog>> {
+    return await QB.paginate(this.postRepo, query, {
+      defaultSearchFields: ['title', 'content'],
+      additionalWhere: { published: true, featured: true },
       additionalRelations: ['author', 'category'],
     });
   }
@@ -54,9 +64,23 @@ export class BlogsService {
     });
   }
 
+  public async findBySlug(slug: string): Promise<Blog> {
+    return await this.postRepo.findOneOrFail({
+      where: { slug },
+      relations: { author: true, category: true },
+    });
+  }
+
   public async update(id: string, dto: UpdateBlogDto): Promise<Blog> {
     const blog = await this.findOne(id);
-    const updatedBlog = await this.postRepo.preload({ id: blog.id, ...dto });
+
+    const updateData = { ...dto };
+    if (dto.slug) updateData.slug = dto.slug;
+
+    const updatedBlog = await this.postRepo.preload({
+      id: blog.id,
+      ...updateData,
+    });
 
     if (!updatedBlog) throw new NotFoundException('Blog not found');
     return await this.postRepo.save(updatedBlog);

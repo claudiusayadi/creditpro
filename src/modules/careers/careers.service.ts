@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { QueryDto } from '../../core/common/dto/query.dto';
 import { IPaginatedResult } from '../../core/common/interfaces/paginated-result.interface';
 import { QB } from '../../core/common/utils/query-builder.util';
+import { slugify } from '../../core/common/utils/slugify';
 import { CreateCareerDto } from './dto/create-career.dto';
 import { UpdateCareerDto } from './dto/update-career.dto';
 import { Career } from './entities/career.entity';
@@ -16,7 +17,8 @@ export class CareersService {
   ) {}
 
   public async create(dto: CreateCareerDto): Promise<Career> {
-    const career = this.careersRepo.create(dto);
+    const slug = dto.slug || slugify(dto.title);
+    const career = this.careersRepo.create({ ...dto, slug });
     return await this.careersRepo.save(career);
   }
 
@@ -37,11 +39,21 @@ export class CareersService {
     return await this.careersRepo.findOneOrFail({ where: { id } });
   }
 
+  public async findBySlug(slug: string): Promise<Career> {
+    return await this.careersRepo.findOneOrFail({ where: { slug } });
+  }
+
   public async update(id: string, dto: UpdateCareerDto): Promise<Career> {
     const career = await this.findOne(id);
+
+    const updateData = { ...dto };
+    if (dto.slug) {
+      updateData.slug = dto.slug;
+    }
+
     const updatedCareer = await this.careersRepo.preload({
       id: career.id,
-      ...dto,
+      ...updateData,
     });
 
     if (!updatedCareer) throw new NotFoundException('Career not found');

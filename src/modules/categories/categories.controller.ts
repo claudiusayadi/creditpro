@@ -26,7 +26,6 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
 
-@Roles(UserRole.ADMIN)
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
@@ -36,6 +35,7 @@ export class CategoriesController {
     description: 'Category created successfully',
     type: Category,
   })
+  @Roles(UserRole.ADMIN)
   @Post()
   async create(@Body() dto: CreateCategoryDto): Promise<Category> {
     return await this.categoriesService.create(dto);
@@ -50,6 +50,15 @@ export class CategoriesController {
   @Get()
   async findAll(@Query() query: QueryDto) {
     return await this.categoriesService.findAll(query);
+  }
+
+  @ApiOperation({ summary: 'Get a category by slug' })
+  @ApiOkResponse({ description: 'Category details', type: Category })
+  @ApiNotFoundResponse({ description: 'Category not found' })
+  @Public()
+  @Get('slug/:slug')
+  async findBySlug(@Param('slug') slug: string): Promise<Category> {
+    return await this.categoriesService.findBySlug(slug);
   }
 
   @ApiOperation({ summary: 'Get a category by ID' })
@@ -67,6 +76,7 @@ export class CategoriesController {
     type: Category,
   })
   @ApiNotFoundResponse({ description: 'Category not found' })
+  @Roles(UserRole.ADMIN)
   @Patch(':id')
   async update(
     @Param() params: IdDto,
@@ -78,6 +88,7 @@ export class CategoriesController {
   @ApiOperation({ summary: 'Delete a category' })
   @ApiNoContentResponse({ description: 'Category deleted successfully' })
   @ApiNotFoundResponse({ description: 'Category not found' })
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   async remove(@Param() params: IdDto): Promise<void> {
     return await this.categoriesService.remove(params.id);

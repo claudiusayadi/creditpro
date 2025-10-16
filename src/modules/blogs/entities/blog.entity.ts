@@ -21,8 +21,8 @@ export class Blog {
   @Column({ type: 'text' })
   content: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  slug?: string;
+  @Column({ type: 'varchar', length: 255 })
+  slug: string;
 
   @Column({ type: 'varchar', length: 500, nullable: true })
   image_url?: string;

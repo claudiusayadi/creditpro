@@ -44,10 +44,7 @@ export class BlogsController {
   }
 
   @ApiOperation({ summary: 'Get all blog posts' })
-  @ApiOkResponse({
-    description: 'List of blog posts',
-    type: [Blog],
-  })
+  @ApiOkResponse({ description: 'List of blog posts', type: [Blog] })
   @Public()
   @Get()
   async findAll(@Query() query: QueryDto) {
@@ -61,6 +58,13 @@ export class BlogsController {
     return await this.blogsService.findPublished(query);
   }
 
+  @ApiOperation({ summary: 'Get featured blog posts' })
+  @Public()
+  @Get('featured')
+  async findFeatured(@Query() query: QueryDto) {
+    return await this.blogsService.findFeatured(query);
+  }
+
   @ApiOperation({ summary: 'Get blog posts by category' })
   @Public()
   @Get('category/:categoryId')
@@ -71,11 +75,17 @@ export class BlogsController {
     return await this.blogsService.findByCategory(categoryId, query);
   }
 
+  @ApiOperation({ summary: 'Get a blog post by slug' })
+  @ApiOkResponse({ description: 'Blog post details', type: Blog })
+  @ApiNotFoundResponse({ description: 'Blog post not found' })
+  @Public()
+  @Get('slug/:slug')
+  async findBySlug(@Param('slug') slug: string): Promise<Blog> {
+    return await this.blogsService.findBySlug(slug);
+  }
+
   @ApiOperation({ summary: 'Get a blog post by ID' })
-  @ApiOkResponse({
-    description: 'Blog post details',
-    type: Blog,
-  })
+  @ApiOkResponse({ description: 'Blog post details', type: Blog })
   @ApiNotFoundResponse({ description: 'Blog post not found' })
   @Public()
   @Get(':id')
