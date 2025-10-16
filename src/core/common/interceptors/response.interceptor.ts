@@ -8,17 +8,17 @@ import { Response } from 'express';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import type { PaginatedResult } from '../interfaces/paginated-result.interface';
-import { ApiResponse } from '../interfaces/response.interface';
+import type { IPaginatedResult } from '../interfaces/paginated-result.interface';
+import { IApiResponse } from '../interfaces/response.interface';
 
 @Injectable()
 export class ResponseInterceptor<T>
-  implements NestInterceptor<T, ApiResponse<T>>
+  implements NestInterceptor<T, IApiResponse<T>>
 {
   intercept(
     context: ExecutionContext,
     next: CallHandler,
-  ): Observable<ApiResponse<T>> {
+  ): Observable<IApiResponse<T>> {
     const response = context.switchToHttp().getResponse<Response>();
     const code = response.statusCode;
 
@@ -42,14 +42,14 @@ export class ResponseInterceptor<T>
     );
   }
 
-  private isPaginatedResult(data: unknown): data is PaginatedResult<unknown> {
+  private isPaginatedResult(data: unknown): data is IPaginatedResult<unknown> {
     return (
       typeof data === 'object' &&
       data !== null &&
       'data' in data &&
       'meta' in data &&
-      Array.isArray((data as PaginatedResult<unknown>).data) &&
-      typeof (data as PaginatedResult<unknown>).meta === 'object'
+      Array.isArray((data as IPaginatedResult<unknown>).data) &&
+      typeof (data as IPaginatedResult<unknown>).meta === 'object'
     );
   }
 }
