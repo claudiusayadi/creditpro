@@ -1,4 +1,4 @@
 export default {
-  access: 'AikiAccessToken',
-  refresh: 'AikiRefreshToken',
+  access: 'CreditProAccessToken',
+  refresh: 'CreditProRefreshToken',
 };
