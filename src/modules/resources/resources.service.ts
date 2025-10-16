@@ -61,38 +61,24 @@ export class ResourcesService {
   }
 
   async findOne(id: string): Promise<Resource> {
-    const resource = await this.resourceRepo.findOne({
+    return await this.resourceRepo.findOneOrFail({
       where: { id },
       relations: { category: true },
     });
-
-    if (!resource) {
-      throw new NotFoundException(`Resource with ID ${id} not found`);
-    }
-
-    return resource;
   }
 
   async findBySlug(slug: string): Promise<Resource> {
-    const resource = await this.resourceRepo.findOne({
+    return await this.resourceRepo.findOneOrFail({
       where: { slug },
       relations: { category: true },
     });
-
-    if (!resource) {
-      throw new NotFoundException(`Resource with slug ${slug} not found`);
-    }
-
-    return resource;
   }
 
   async update(id: string, dto: UpdateResourceDto): Promise<Resource> {
     const resource = await this.findOne(id);
 
     const updateData = { ...dto };
-    if (dto.slug) {
-      updateData.slug = dto.slug;
-    }
+    if (dto.slug) updateData.slug = dto.slug;
 
     const updated = await this.resourceRepo.preload({
       id: resource.id,

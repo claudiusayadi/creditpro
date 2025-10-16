@@ -7,31 +7,34 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiNoContentResponse,
+  ApiOkResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 
-import { IdDto } from 'src/core/common/dto/id.dto';
-import { QueryDto } from 'src/core/common/dto/query.dto';
-import { Public } from 'src/modules/auth/decorators/public.decorator';
-import { Roles } from 'src/modules/auth/decorators/roles.decorator';
-import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
-import { RoleGuard } from 'src/modules/auth/guards/role.guard';
-import { UserRole } from 'src/modules/users/enums/roles.enum';
+import { IdDto } from '../../core/common/dto/id.dto';
+import { QueryDto } from '../../core/common/dto/query.dto';
+import { Public } from '../../modules/auth/decorators/public.decorator';
+import { Roles } from '../../modules/auth/decorators/roles.decorator';
+import { UserRole } from '../../modules/users/enums/roles.enum';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EventsService } from './events.service';
 
-@ApiTags('Events')
 @Controller('events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
-  @Post()
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Create a new event (Admin only)' })
+  @ApiCreatedResponse({
+    description: 'Event created successfully',
+    type: Event,
+  })
+  @Roles(UserRole.ADMIN)
+  @Post()
   async create(@Body() createEventDto: CreateEventDto) {
     return await this.eventsService.create(createEventDto);
   }
@@ -43,16 +46,17 @@ export class EventsController {
     return await this.eventsService.findAll(query);
   }
 
-  @Get('published')
-  @Public()
   @ApiOperation({ summary: 'Get all published events' })
+  @Public()
+  @Get('published')
   async findPublished(@Query() query: QueryDto) {
     return await this.eventsService.findPublished(query);
   }
 
-  @Get('upcoming')
-  @Public()
   @ApiOperation({ summary: 'Get upcoming published events' })
+  @ApiOkResponse({ description: 'List of upcoming events', type: [Event] })
+  @Public()
+  @Get('upcoming')
   async findUpcoming(@Query() query: QueryDto) {
     return await this.eventsService.findUpcoming(query);
   }
@@ -64,9 +68,10 @@ export class EventsController {
     return await this.eventsService.findFeatured();
   }
 
-  @Get('slug/:slug')
-  @Public()
   @ApiOperation({ summary: 'Get an event by slug' })
+  @ApiOkResponse({ description: 'Event details', type: Event })
+  @Public()
+  @Get('slug/:slug')
   async findBySlug(@Param('slug') slug: string) {
     return await this.eventsService.findBySlug(slug);
   }
@@ -78,20 +83,18 @@ export class EventsController {
     return await this.eventsService.findOne(id);
   }
 
-  @Patch(':id')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Update an event (Admin only)' })
+  @ApiOkResponse({ description: 'Event updated successfully', type: Event })
+  @Roles(UserRole.ADMIN)
+  @Patch(':id')
   async update(@Param() { id }: IdDto, @Body() updateEventDto: UpdateEventDto) {
     return await this.eventsService.update(id, updateEventDto);
   }
 
-  @Delete(':id')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Delete an event (Admin only)' })
+  @ApiNoContentResponse({ description: 'Event deleted successfully' })
+  @Roles(UserRole.ADMIN)
+  @Delete(':id')
   async remove(@Param() { id }: IdDto) {
     await this.eventsService.remove(id);
     return { message: 'Event deleted successfully' };
