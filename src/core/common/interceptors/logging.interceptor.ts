@@ -16,7 +16,8 @@ export class Traffic implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest<Request>();
     const response = context.switchToHttp().getResponse<Response>();
-    const { method, url, ip } = request;
+    const { method, url } = request;
+    const ip = this.extractIpAddress(request);
     const startTime = Date.now();
 
     return next.handle().pipe(
@@ -41,5 +42,22 @@ export class Traffic implements NestInterceptor {
         },
       }),
     );
+  }
+
+  private extractIpAddress(request: Request): string {
+    let ip = request.ip || request.socket.remoteAddress || 'unknown';
+
+    // Convert IPv6-mapped IPv4 addresses to IPv4 format
+    // ::ffff:192.168.1.1 -> 192.168.1.1
+    if (ip.startsWith('::ffff:')) {
+      ip = ip.substring(7);
+    }
+
+    // Convert IPv6 loopback to IPv4 loopback
+    if (ip === '::1') {
+      ip = '127.0.0.1';
+    }
+
+    return ip;
   }
 }
