@@ -1,29 +1,135 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# CreditPro API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+An all-in-one organizational management platform, fully production-ready RESTful API built with NestJS, providing a comprehensive backend solution for content management, user authentication, media handling, and organizational resources.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Overview
 
-## Description
+CreditPro API is a modern, scalable backend application designed to power content-driven platforms. It features a robust authentication system, content management capabilities for blogs and events, career postings, resource management, and a centralized media handling system. Built with TypeScript and following industry best practices, the API ensures type safety, maintainability, and excellent developer experience.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Core Features
+
+### Authentication & Authorization
+
+- JWT-based authentication with secure cookie storage
+- Role-based access control (Admin, User)
+- Email verification with 6-digit verification codes
+- Password reset functionality with time-limited reset codes
+- Refresh token rotation with Redis-backed session management
+- Argon2 password hashing for enhanced security
+- Rate limiting and throttling protection
+
+### Content Management
+
+- **Blogs**: Full CRUD operations with slug-based routing, category association, author attribution, and featured/published status management
+- **Events**: Event management with date-based filtering, location tracking, registration URLs, and featured event support
+- **Categories**: Hierarchical organization for blogs and resources with slug-based access
+- **Resources**: Document and file management with type categorization, download tracking, and thumbnail support
+
+### Media Management
+
+- Centralized media handling with database tracking
+- Support for images (PNG, JPG, WebP, GIF, SVG), documents (DOC, DOCX, TXT, RTF), and PDFs
+- File validation with MIME type checking and magic number verification
+- Automatic file organization by year and month
+- Metadata management including alt text and descriptions
+- Media statistics and analytics
+
+### User Management
+
+- User profile management
+- Email verification workflow
+- Password change functionality
+- User role management
+
+### Additional Modules
+
+- **Career Postings**: Job listing management with location and type filtering
+- **Contact System**: Contact form submission handling with status tracking
+- **Dashboard**: Administrative analytics and overview
+- **Health Monitoring**: System health checks for database and application status
+- **Settings**: Application configuration management with key-value storage
+
+## Technology Stack
+
+### Core Framework
+
+- **NestJS 11.x**: Progressive Node.js framework
+- **TypeScript 5.x**: Type-safe development
+- **Node.js**: Runtime environment
+
+### Database & Caching
+
+- **PostgreSQL**: Primary database with TypeORM
+- **Redis**: Session management and caching
+- **TypeORM 0.3.x**: Database ORM with migration support
+
+### Authentication & Security
+
+- **Passport.js**: Authentication middleware with JWT and Local strategies
+- **JWT**: Token-based authentication
+- **Argon2**: Password hashing
+- **Helmet**: Security headers
+- **CORS**: Cross-origin resource sharing configuration
+- **Rate Limiting**: Request throttling with @nestjs/throttler
+
+### File Handling
+
+- **Multer**: Multipart form data handling
+- **Magic Bytes**: File type validation
+- **File Type Detection**: MIME type verification
+
+### Email
+
+- **Nodemailer**: Email delivery
+- **Handlebars**: Email template rendering
+- **@nestjs-modules/mailer**: NestJS email integration
+
+### API Documentation
+
+- **Swagger/OpenAPI**: Automatic API documentation generation
+- **@nestjs/swagger**: NestJS Swagger integration
+
+### Validation & Transformation
+
+- **class-validator**: DTO validation
+- **class-transformer**: Data transformation
+- **Zod**: Environment variable validation
+
+## Architecture
+
+The application follows a modular architecture with clear separation of concerns:
+
+```
+src/
+├── core/                    # Core functionality
+│   ├── common/             # Shared utilities, DTOs, decorators, and interfaces
+│   ├── config/             # Application configuration
+│   ├── db/                 # Database module
+│   ├── redis/              # Redis module
+│   └── swagger/            # API documentation schemas
+└── modules/                # Feature modules
+    ├── auth/               # Authentication and authorization
+    ├── blogs/              # Blog management
+    ├── careers/            # Career postings
+    ├── categories/         # Content categorization
+    ├── contact/            # Contact form handling
+    ├── dashboard/          # Administrative dashboard
+    ├── email/              # Email service
+    ├── events/             # Event management
+    ├── health/             # Health monitoring
+    ├── media/              # Media management
+    ├── resources/          # Resource management
+    └── users/              # User management
+```
+
+### Design Patterns
+
+- Repository pattern for data access
+- Dependency injection for loose coupling
+- Guard-based authorization
+- Interceptor-based response transformation
+- Filter-based exception handling
+- Strategy pattern for authentication
 
 ## Project setup
 
