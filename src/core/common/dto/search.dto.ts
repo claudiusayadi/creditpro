@@ -5,10 +5,10 @@ import { IsArray, IsOptional, IsString } from 'class-validator';
  * Search DTO for full-text search across multiple fields
  */
 export class SearchDto {
-  @ApiPropertyOptional({
-    description: 'Search query string',
-    example: 'john doe',
-  })
+  /**
+   * Search query string
+   * @example "john doe"
+   */
   @IsString()
   @IsOptional()
   search?: string;

@@ -13,6 +13,7 @@ import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 import { IdDto } from '../../core/common/dto/id.dto';
 import { QueryDto } from '../../core/common/dto/query.dto';
+import { Public } from '../auth/decorators/public.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RoleGuard } from '../auth/guards/role.guard';
@@ -27,6 +28,7 @@ export class ContactsController {
   constructor(private readonly contactService: ContactsService) {}
 
   @Post()
+  @Public()
   @ApiOperation({ summary: 'Submit a contact message' })
   async create(@Body() createContactDto: CreateContactDto) {
     return await this.contactService.create(createContactDto);

@@ -30,8 +30,21 @@ export class EmailService {
   ): Promise<void> {
     await this.sendEmail({
       to: email,
-      subject: 'Verify Your Email - Aiki',
+      subject: 'Verify Your Email - CreditPro',
       template: 'verification',
+      context: { code, name },
+    });
+  }
+
+  public async sendPasswordResetEmail(
+    email: string,
+    code: string,
+    name?: string,
+  ): Promise<void> {
+    await this.sendEmail({
+      to: email,
+      subject: 'Password Reset Request - CreditPro',
+      template: 'forgot-password',
       context: { code, name },
     });
   }

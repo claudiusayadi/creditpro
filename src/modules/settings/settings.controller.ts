@@ -13,6 +13,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { IdDto } from 'src/core/common/dto/id.dto';
 import { QueryDto } from 'src/core/common/dto/query.dto';
+import { Public } from 'src/modules/auth/decorators/public.decorator';
 import { Roles } from 'src/modules/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 import { RoleGuard } from 'src/modules/auth/guards/role.guard';
@@ -26,26 +27,23 @@ import { SettingsService } from './settings.service';
 export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
 
-  @Post()
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Create a new setting (Admin only)' })
+  @Roles(UserRole.ADMIN)
+  @Post()
   async create(@Body() createSettingDto: CreateSettingDto) {
     return await this.settingsService.create(createSettingDto);
   }
 
-  @Get()
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Get all settings (Admin only)' })
+  @Roles(UserRole.ADMIN)
+  @Get()
   async findAll(@Query() query: QueryDto) {
     return await this.settingsService.findAll(query);
   }
 
-  @Get('public')
   @ApiOperation({ summary: 'Get public settings' })
+  @Public()
+  @Get('public')
   async findPublic() {
     return await this.settingsService.findPublic();
   }
