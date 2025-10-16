@@ -36,7 +36,9 @@ import { ActiveUser } from './decorators/active-user.decorator';
 import { Public } from './decorators/public.decorator';
 import { AuthDto } from './dto/auth.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResendVerificationDto } from './dto/resend-verification.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
@@ -155,5 +157,29 @@ export class AuthController {
   @Post('resend-verification')
   public async resendVerification(@Body() dto: ResendVerificationDto) {
     return this.authService.resendVerificationCode(dto);
+  }
+
+  @ApiOperation({ summary: 'Request password reset code' })
+  @ApiOkResponse({
+    description: 'Password reset code sent if account exists',
+  })
+  @HttpCode(HttpStatus.OK)
+  @Public()
+  @Post('forgot-password')
+  public async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(dto);
+  }
+
+  @ApiOperation({ summary: 'Reset password with code' })
+  @ApiOkResponse({ description: 'Password reset successfully' })
+  @ApiBadRequestResponse({
+    description: 'Invalid or expired reset code',
+  })
+  @ApiNotFoundResponse({ description: 'User not found' })
+  @HttpCode(HttpStatus.OK)
+  @Public()
+  @Post('reset-password')
+  public async resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto);
   }
 }

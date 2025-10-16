@@ -34,9 +34,9 @@ export class AuthService {
     @InjectRepository(User)
     private readonly usersRepo: Repository<User>,
     @Inject(jwtConfig.KEY)
-    private readonly jwtCfg: ConfigType<typeof jwtConfig>,
+    private readonly jwt: ConfigType<typeof jwtConfig>,
     @Inject(emailConfig.KEY)
-    private readonly config: ConfigType<typeof emailConfig>,
+    private readonly mail: ConfigType<typeof emailConfig>,
     private readonly jwtService: JwtService,
     private readonly redisService: RedisService,
     private readonly emailService: EmailService,
@@ -115,7 +115,7 @@ export class AuthService {
     }
 
     const decoded = this.jwtService.verify<IPayload>(refreshToken, {
-      secret: this.jwtCfg.secret,
+      secret: this.jwt.secret,
     });
 
     if (!decoded) throw new UnauthorizedException('Invalid refresh token');
@@ -149,6 +149,74 @@ export class AuthService {
     await this.redisService.invalidateRefreshToken(id);
 
     return { message: 'Password changed successfully' };
+  }
+
+  public async forgotPassword(dto: { email: string }) {
+    const { email } = dto;
+    const user = await this.usersRepo.findOne({ where: { email } });
+
+    if (!user) {
+      return {
+        message:
+          'If an account with that email exists, a password reset code has been sent.',
+      };
+    }
+
+    await this.sendPasswordResetCode(user);
+
+    return {
+      message:
+        'If an account with that email exists, a password reset code has been sent.',
+    };
+  }
+
+  public async resetPassword(dto: {
+    email: string;
+    code: string;
+    password: string;
+  }) {
+    const { email, code, password } = dto;
+    const user = await this.usersRepo.findOne({
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        password: true,
+        password_reset_code: true,
+        password_reset_code_expires_at: true,
+      },
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    if (!user.password_reset_code || !user.password_reset_code_expires_at) {
+      throw new BadRequestException(
+        'No password reset code found. Please request a new one',
+      );
+    }
+
+    if (new Date() > user.password_reset_code_expires_at) {
+      throw new BadRequestException(
+        'Password reset code has expired. Please request a new one',
+      );
+    }
+
+    if (user.password_reset_code !== code) {
+      throw new BadRequestException('Invalid password reset code');
+    }
+
+    user.password = password;
+    user.password_reset_code = undefined;
+    user.password_reset_code_expires_at = undefined;
+    await this.usersRepo.save(user);
+
+    // Invalidate refresh token
+    await this.redisService.invalidateRefreshToken(user.id);
+
+    return {
+      message:
+        'Password reset successfully. You can now sign in with your new password at /api/v1/auth/signin',
+    };
   }
 
   public async assignRole(id: string, role: UserRole) {
@@ -244,20 +312,20 @@ export class AuthService {
 
     const accessToken = await this.signToken(
       payload,
-      this.jwtCfg.secret,
-      this.jwtCfg.signOptions.expiresIn,
+      this.jwt.secret,
+      this.jwt.signOptions.expiresIn,
     );
 
     const refreshToken = await this.signToken(
       payload,
-      this.jwtCfg.secret,
-      this.jwtCfg.refreshTokenTtl,
+      this.jwt.secret,
+      this.jwt.refreshTokenTtl,
     );
 
     await this.redisService.setRefreshToken(
       user.id,
       refreshToken,
-      this.jwtCfg.refreshTokenTtl,
+      this.jwt.refreshTokenTtl,
     );
 
     return { accessToken, refreshToken };
@@ -265,15 +333,24 @@ export class AuthService {
 
   private async sendVerificationCode(user: User): Promise<void> {
     const code = this.generateVerificationCode();
-    const expiresAt = new Date(
-      Date.now() + this.config.verificationCodeTtl * 1000,
-    );
+    const expiresAt = new Date(Date.now() + this.mail.verificationCodeTtl);
 
     user.verification_code = code;
     user.verification_code_expires_at = expiresAt;
     await this.usersRepo.save(user);
 
     await this.emailService.sendVerificationEmail(user.email, code, user.name);
+  }
+
+  private async sendPasswordResetCode(user: User): Promise<void> {
+    const code = this.generateVerificationCode();
+    const expiresAt = new Date(Date.now() + this.mail.verificationCodeTtl);
+
+    user.password_reset_code = code;
+    user.password_reset_code_expires_at = expiresAt;
+    await this.usersRepo.save(user);
+
+    await this.emailService.sendPasswordResetEmail(user.email, code, user.name);
   }
 
   private generateVerificationCode(): string {
