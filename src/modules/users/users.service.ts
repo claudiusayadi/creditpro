@@ -9,9 +9,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { QueryDto } from '../../core/common/dto/query.dto';
-import { PaginatedResult } from '../../core/common/interfaces/paginated-result.interface';
+import { IPaginatedResult } from '../../core/common/interfaces/paginated-result.interface';
 import { compareIds } from '../../core/common/utils/compare-ids.util';
-import { PaginationUtil } from '../../core/common/utils/pagination.util';
+import { QB } from '../../core/common/utils/query-builder.util';
 import { AuthDto } from '../auth/dto/auth.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -36,10 +36,9 @@ export class UsersService {
     return await this.usersRepo.save(user);
   }
 
-  public async findAll(query: QueryDto): Promise<PaginatedResult<User>> {
-    return await PaginationUtil.paginate(this.usersRepo, {
-      pagination: query,
-      sort: query,
+  public async findAll(query: QueryDto): Promise<IPaginatedResult<User>> {
+    return await QB.paginate(this.usersRepo, query, {
+      defaultSearchFields: ['email', 'name'],
     });
   }
 
