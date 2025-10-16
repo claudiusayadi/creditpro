@@ -12,4 +12,3 @@ import { ResourcesService } from './resources.service';
   exports: [ResourcesService],
 })
 export class ResourcesModule {}
-

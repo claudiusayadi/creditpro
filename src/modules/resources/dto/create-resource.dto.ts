@@ -46,4 +46,3 @@ export class CreateResourceDto {
   @IsOptional()
   published?: boolean = true;
 }
-

@@ -97,4 +97,3 @@ export class ResourcesController {
     return { message: 'Resource deleted successfully' };
   }
 }
-

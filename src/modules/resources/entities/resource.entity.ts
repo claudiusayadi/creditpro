@@ -45,4 +45,3 @@ export class Resource {
   @Column(() => RegistryDates, { prefix: false })
   registry: RegistryDates;
 }
-

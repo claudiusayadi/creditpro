@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { QueryDto } from 'src/core/common/dto/query.dto';
-import type { PaginatedResult } from 'src/core/common/interfaces/paginated-result.interface';
-import { PaginationUtil } from 'src/core/common/utils/pagination.util';
+import type { IPaginatedResult } from 'src/core/common/interfaces/paginated-result.interface';
+import { QB } from 'src/core/common/utils/query-builder.util';
 import type { CreateResourceDto } from './dto/create-resource.dto';
 import type { UpdateResourceDto } from './dto/update-resource.dto';
 import { Resource } from './entities/resource.entity';
@@ -21,44 +21,40 @@ export class ResourcesService {
     return await this.resourceRepo.save(resource);
   }
 
-  async findAll(query: QueryDto): Promise<PaginatedResult<Resource>> {
-    return await PaginationUtil.paginate(this.resourceRepo, {
-      pagination: query,
-      sort: query,
-      relations: { category: true },
+  async findAll(query: QueryDto): Promise<IPaginatedResult<Resource>> {
+    return await QB.paginate(this.resourceRepo, query, {
+      defaultSearchFields: ['title', 'description'],
+      additionalRelations: ['category'],
     });
   }
 
-  async findPublished(query: QueryDto): Promise<PaginatedResult<Resource>> {
-    return await PaginationUtil.paginate(this.resourceRepo, {
-      pagination: query,
-      sort: query,
-      where: { published: true },
-      relations: { category: true },
+  async findPublished(query: QueryDto): Promise<IPaginatedResult<Resource>> {
+    return await QB.paginate(this.resourceRepo, query, {
+      defaultSearchFields: ['title', 'description'],
+      additionalWhere: { published: true },
+      additionalRelations: ['category'],
     });
   }
 
   async findByCategory(
     categoryId: string,
     query: QueryDto,
-  ): Promise<PaginatedResult<Resource>> {
-    return await PaginationUtil.paginate(this.resourceRepo, {
-      pagination: query,
-      sort: query,
-      where: { category: { id: categoryId }, published: true },
-      relations: { category: true },
+  ): Promise<IPaginatedResult<Resource>> {
+    return await QB.paginate(this.resourceRepo, query, {
+      defaultSearchFields: ['title', 'description'],
+      additionalWhere: { category: { id: categoryId }, published: true },
+      additionalRelations: ['category'],
     });
   }
 
   async findByType(
     type: string,
     query: QueryDto,
-  ): Promise<PaginatedResult<Resource>> {
-    return await PaginationUtil.paginate(this.resourceRepo, {
-      pagination: query,
-      sort: query,
-      where: { type, published: true },
-      relations: { category: true },
+  ): Promise<IPaginatedResult<Resource>> {
+    return await QB.paginate(this.resourceRepo, query, {
+      defaultSearchFields: ['title', 'description'],
+      additionalWhere: { type, published: true },
+      additionalRelations: ['category'],
     });
   }
 
@@ -98,4 +94,3 @@ export class ResourcesService {
     await this.resourceRepo.softDelete(resource.id);
   }
 }
-
