@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Query,
-} from '@nestjs/common';
+import { Controller, Delete, Get, Query } from '@nestjs/common';
 import {
   ApiForbiddenResponse,
   ApiNoContentResponse,
@@ -31,7 +24,7 @@ export class DashboardController {
   @ApiOperation({
     summary: 'Get dashboard overview',
     description:
-      'Retrieves comprehensive statistics for all modules including blogs, events, careers, contacts, media, resources, users, and categories. Admin only.',
+      'Retrieves comprehensive statistics for all modules including blogs, events, careers, contacts, media, resources, users, and categories.',
   })
   @ApiOkResponse({
     description: 'Dashboard overview statistics retrieved successfully',
@@ -46,7 +39,7 @@ export class DashboardController {
   @ApiOperation({
     summary: 'Get dashboard analytics',
     description:
-      'Retrieves analytics and trend data including content creation trends over the last 6 months and engagement metrics. Admin only.',
+      'Retrieves analytics and trend data including content creation trends over the last 6 months and engagement metrics.',
   })
   @ApiOkResponse({ description: 'Dashboard analytics retrieved successfully' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
@@ -59,7 +52,7 @@ export class DashboardController {
   @ApiOperation({
     summary: 'Get recent activity',
     description:
-      'Retrieves recent activity across all modules including latest blogs, contacts, events, and users. Admin only.',
+      'Retrieves recent activity across all modules including latest blogs, contacts, events, and users.',
   })
   @ApiOkResponse({ description: 'Recent activity retrieved successfully' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
@@ -72,7 +65,6 @@ export class DashboardController {
     return this.dashboardService.getRecentActivity(parsedLimit);
   }
 
-  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: 'Clear dashboard cache',
     description:

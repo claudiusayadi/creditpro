@@ -2,10 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThanOrEqual, Repository } from 'typeorm';
 
-import { QueryDto } from 'src/core/common/dto/query.dto';
-import type { IPaginatedResult } from 'src/core/common/interfaces/paginated-result.interface';
-import { QB } from 'src/core/common/utils/query-builder.util';
-import { slugify } from 'src/core/common/utils/slugify';
+import { QueryDto } from '../../core/common/dto/query.dto';
+import type { IPaginatedResult } from '../../core/common/interfaces/paginated-result.interface';
+import { QB } from '../../core/common/utils/query-builder.util';
+import { slugify } from '../../core/common/utils/slugify';
 import type { CreateEventDto } from './dto/create-event.dto';
 import type { UpdateEventDto } from './dto/update-event.dto';
 import { Event } from './entities/event.entity';
@@ -78,9 +78,7 @@ export class EventsService {
     const event = await this.findOne(id);
 
     const updateData = { ...dto };
-    if (dto.slug) {
-      updateData.slug = dto.slug;
-    }
+    if (dto.slug) updateData.slug = dto.slug;
 
     const updated = await this.eventRepo.preload({
       id: event.id,

@@ -42,10 +42,7 @@ export class CareersController {
   }
 
   @ApiOperation({ summary: 'Get all career postings' })
-  @ApiOkResponse({
-    description: 'List of career postings',
-    type: [Career],
-  })
+  @ApiOkResponse({ description: 'List of career postings', type: [Career] })
   @Public()
   @Get()
   async findAll(@Query() query: QueryDto) {
@@ -53,6 +50,10 @@ export class CareersController {
   }
 
   @ApiOperation({ summary: 'Get active career postings' })
+  @ApiOkResponse({
+    description: 'List of active career postings',
+    type: [Career],
+  })
   @Public()
   @Get('active')
   async findActive(@Query() query: QueryDto) {
@@ -60,10 +61,7 @@ export class CareersController {
   }
 
   @ApiOperation({ summary: 'Get a career posting by slug' })
-  @ApiOkResponse({
-    description: 'Career posting details',
-    type: Career,
-  })
+  @ApiOkResponse({ description: 'Career posting details', type: Career })
   @ApiNotFoundResponse({ description: 'Career posting not found' })
   @Public()
   @Get('slug/:slug')
@@ -72,10 +70,7 @@ export class CareersController {
   }
 
   @ApiOperation({ summary: 'Get a career posting by ID' })
-  @ApiOkResponse({
-    description: 'Career posting details',
-    type: Career,
-  })
+  @ApiOkResponse({ description: 'Career posting details', type: Career })
   @ApiNotFoundResponse({ description: 'Career posting not found' })
   @Public()
   @Get(':id')
@@ -103,7 +98,8 @@ export class CareersController {
   @ApiNotFoundResponse({ description: 'Career posting not found' })
   @Roles(UserRole.ADMIN)
   @Delete(':id')
-  async remove(@Param() params: IdDto): Promise<void> {
-    return await this.careersService.remove(params.id);
+  async remove(@Param() params: IdDto) {
+    await this.careersService.remove(params.id);
+    return { message: 'Career posting deleted successfully' };
   }
 }

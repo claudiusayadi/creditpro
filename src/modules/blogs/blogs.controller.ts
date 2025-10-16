@@ -20,6 +20,8 @@ import { IdDto } from '../../core/common/dto/id.dto';
 import { QueryDto } from '../../core/common/dto/query.dto';
 import { ActiveUser } from '../auth/decorators/active-user.decorator';
 import { Public } from '../auth/decorators/public.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '../users/enums/roles.enum';
 import type { IRequestUser } from '../users/interfaces/user.interface';
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
@@ -35,6 +37,7 @@ export class BlogsController {
     description: 'Blog post created successfully',
     type: Blog,
   })
+  @Roles(UserRole.ADMIN)
   @Post()
   async create(
     @Body() dto: CreateBlogDto,
@@ -52,6 +55,7 @@ export class BlogsController {
   }
 
   @ApiOperation({ summary: 'Get all published blog posts' })
+  @ApiOkResponse({ description: 'List of published blog posts', type: [Blog] })
   @Public()
   @Get('published')
   async findPublished(@Query() query: QueryDto) {
@@ -59,6 +63,7 @@ export class BlogsController {
   }
 
   @ApiOperation({ summary: 'Get featured blog posts' })
+  @ApiOkResponse({ description: 'List of featured blog posts', type: [Blog] })
   @Public()
   @Get('featured')
   async findFeatured(@Query() query: QueryDto) {
@@ -66,6 +71,10 @@ export class BlogsController {
   }
 
   @ApiOperation({ summary: 'Get blog posts by category' })
+  @ApiOkResponse({
+    description: 'List of blog posts by category',
+    type: [Blog],
+  })
   @Public()
   @Get('category/:categoryId')
   async findByCategory(
@@ -99,6 +108,7 @@ export class BlogsController {
     type: Blog,
   })
   @ApiNotFoundResponse({ description: 'Blog post not found' })
+  @Roles(UserRole.ADMIN)
   @Patch(':id')
   async update(
     @Param() params: IdDto,
@@ -110,8 +120,10 @@ export class BlogsController {
   @ApiOperation({ summary: 'Delete a blog post' })
   @ApiNoContentResponse({ description: 'Blog post deleted successfully' })
   @ApiNotFoundResponse({ description: 'Blog post not found' })
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
-  async remove(@Param() params: IdDto): Promise<void> {
-    return await this.blogsService.remove(params.id);
+  async remove(@Param() params: IdDto) {
+    await this.blogsService.remove(params.id);
+    return { message: 'Blog post deleted successfully' };
   }
 }

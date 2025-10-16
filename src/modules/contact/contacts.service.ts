@@ -2,9 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { QueryDto } from 'src/core/common/dto/query.dto';
-import type { IPaginatedResult } from 'src/core/common/interfaces/paginated-result.interface';
-import { QB } from 'src/core/common/utils/query-builder.util';
+import { QueryDto } from '../../core/common/dto/query.dto';
+import type { IPaginatedResult } from '../../core/common/interfaces/paginated-result.interface';
+import { QB } from '../../core/common/utils/query-builder.util';
 import type { CreateContactDto } from './dto/create-contact.dto';
 import type { UpdateContactDto } from './dto/update-contact.dto';
 import { Contact } from './entities/contact.entity';

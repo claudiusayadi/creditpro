@@ -47,9 +47,7 @@ export class CareersService {
     const career = await this.findOne(id);
 
     const updateData = { ...dto };
-    if (dto.slug) {
-      updateData.slug = dto.slug;
-    }
+    if (dto.slug) updateData.slug = dto.slug;
 
     const updatedCareer = await this.careersRepo.preload({
       id: career.id,
