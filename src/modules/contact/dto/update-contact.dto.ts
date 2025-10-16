@@ -11,4 +11,3 @@ export class UpdateContactDto {
   @IsOptional()
   admin_notes?: string;
 }
-

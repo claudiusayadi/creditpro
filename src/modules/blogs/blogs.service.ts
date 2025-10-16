@@ -2,10 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { IRequestUser } from 'src/modules/users/interfaces/user.interface';
 import { QueryDto } from '../../core/common/dto/query.dto';
-import { PaginatedResult } from '../../core/common/interfaces/paginated-result.interface';
-import { PaginationUtil } from '../../core/common/utils/pagination.util';
+import { IPaginatedResult } from '../../core/common/interfaces/paginated-result.interface';
+import { QB } from '../../core/common/utils/query-builder.util';
+import { IRequestUser } from '../users/interfaces/user.interface';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { Blog } from './entities/blog.entity';
@@ -21,32 +21,29 @@ export class BlogsService {
     return await this.postRepo.save(blog);
   }
 
-  public async findAll(query: QueryDto): Promise<PaginatedResult<Blog>> {
-    return await PaginationUtil.paginate(this.postRepo, {
-      pagination: query,
-      sort: query,
-      relations: { author: true, category: true },
+  public async findAll(query: QueryDto): Promise<IPaginatedResult<Blog>> {
+    return await QB.paginate(this.postRepo, query, {
+      defaultSearchFields: ['title', 'content'],
+      additionalRelations: ['author', 'category'],
     });
   }
 
-  public async findPublished(query: QueryDto): Promise<PaginatedResult<Blog>> {
-    return await PaginationUtil.paginate(this.postRepo, {
-      pagination: query,
-      sort: query,
-      where: { published: true },
-      relations: { author: true, category: true },
+  public async findPublished(query: QueryDto): Promise<IPaginatedResult<Blog>> {
+    return await QB.paginate(this.postRepo, query, {
+      defaultSearchFields: ['title', 'content'],
+      additionalWhere: { published: true },
+      additionalRelations: ['author', 'category'],
     });
   }
 
   public async findByCategory(
     categoryId: string,
     query: QueryDto,
-  ): Promise<PaginatedResult<Blog>> {
-    return await PaginationUtil.paginate(this.postRepo, {
-      pagination: query,
-      sort: query,
-      where: { category: { id: categoryId }, published: true },
-      relations: { author: true, category: true },
+  ): Promise<IPaginatedResult<Blog>> {
+    return await QB.paginate(this.postRepo, query, {
+      defaultSearchFields: ['title', 'content'],
+      additionalWhere: { category: { id: categoryId }, published: true },
+      additionalRelations: ['author', 'category'],
     });
   }
 

@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { QueryDto } from 'src/core/common/dto/query.dto';
-import type { PaginatedResult } from 'src/core/common/interfaces/paginated-result.interface';
-import { PaginationUtil } from 'src/core/common/utils/pagination.util';
+import type { IPaginatedResult } from 'src/core/common/interfaces/paginated-result.interface';
+import { QB } from 'src/core/common/utils/query-builder.util';
 import type { CreateContactDto } from './dto/create-contact.dto';
 import type { UpdateContactDto } from './dto/update-contact.dto';
 import { Contact } from './entities/contact.entity';
@@ -22,21 +22,19 @@ export class ContactsService {
     return await this.contactRepo.save(contact);
   }
 
-  async findAll(query: QueryDto): Promise<PaginatedResult<Contact>> {
-    return await PaginationUtil.paginate(this.contactRepo, {
-      pagination: query,
-      sort: query,
+  async findAll(query: QueryDto): Promise<IPaginatedResult<Contact>> {
+    return await QB.paginate(this.contactRepo, query, {
+      defaultSearchFields: ['name', 'email', 'subject', 'message'],
     });
   }
 
   async findByStatus(
     status: ContactStatus,
     query: QueryDto,
-  ): Promise<PaginatedResult<Contact>> {
-    return await PaginationUtil.paginate(this.contactRepo, {
-      pagination: query,
-      sort: query,
-      where: { status },
+  ): Promise<IPaginatedResult<Contact>> {
+    return await QB.paginate(this.contactRepo, query, {
+      defaultSearchFields: ['name', 'email', 'subject', 'message'],
+      additionalWhere: { status },
     });
   }
 

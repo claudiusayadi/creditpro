@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { QueryDto } from '../../core/common/dto/query.dto';
-import { PaginatedResult } from '../../core/common/interfaces/paginated-result.interface';
-import { PaginationUtil } from '../../core/common/utils/pagination.util';
+import { IPaginatedResult } from '../../core/common/interfaces/paginated-result.interface';
+import { QB } from '../../core/common/utils/query-builder.util';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
@@ -21,10 +21,9 @@ export class CategoriesService {
     return await this.categoryRepo.save(category);
   }
 
-  public async findAll(query: QueryDto): Promise<PaginatedResult<Category>> {
-    return await PaginationUtil.paginate(this.categoryRepo, {
-      pagination: query,
-      sort: query,
+  public async findAll(query: QueryDto): Promise<IPaginatedResult<Category>> {
+    return await QB.paginate(this.categoryRepo, query, {
+      defaultSearchFields: ['name', 'description'],
     });
   }
 

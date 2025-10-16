@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { QueryDto } from '../../core/common/dto/query.dto';
-import { PaginatedResult } from '../../core/common/interfaces/paginated-result.interface';
-import { PaginationUtil } from '../../core/common/utils/pagination.util';
+import { IPaginatedResult } from '../../core/common/interfaces/paginated-result.interface';
+import { QB } from '../../core/common/utils/query-builder.util';
 import { CreateCareerDto } from './dto/create-career.dto';
 import { UpdateCareerDto } from './dto/update-career.dto';
 import { Career } from './entities/career.entity';
@@ -20,18 +20,16 @@ export class CareersService {
     return await this.careersRepo.save(career);
   }
 
-  public async findAll(query: QueryDto): Promise<PaginatedResult<Career>> {
-    return await PaginationUtil.paginate(this.careersRepo, {
-      pagination: query,
-      sort: query,
+  public async findAll(query: QueryDto): Promise<IPaginatedResult<Career>> {
+    return await QB.paginate(this.careersRepo, query, {
+      defaultSearchFields: ['title', 'description', 'location'],
     });
   }
 
-  public async findActive(query: QueryDto): Promise<PaginatedResult<Career>> {
-    return await PaginationUtil.paginate(this.careersRepo, {
-      pagination: query,
-      sort: query,
-      where: { active: true },
+  public async findActive(query: QueryDto): Promise<IPaginatedResult<Career>> {
+    return await QB.paginate(this.careersRepo, query, {
+      defaultSearchFields: ['title', 'description', 'location'],
+      additionalWhere: { active: true },
     });
   }
 
