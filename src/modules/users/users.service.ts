@@ -38,7 +38,7 @@ export class UsersService {
 
   public async findAll(query: QueryDto): Promise<IPaginatedResult<User>> {
     return await QB.paginate(this.usersRepo, query, {
-      defaultSearchFields: ['email', 'first_name', 'last_name'],
+      defaultSearchFields: ['email', 'firstName', 'lastName'],
     });
   }
 

@@ -43,15 +43,15 @@ export class MediaService {
 
       const media = this.mediaRepo.create({
         filename: file.filename,
-        original_filename: file.originalname,
+        originalFilename: file.originalname,
         url: `${this.baseUrl}/${file.path}`,
-        mime_type: file.mimetype,
+        mimeType: file.mimetype,
         size: file.size,
         type: mediaType as MediaType,
         extension: ext,
         year,
         month,
-        alt_text: dto?.alt_text,
+        altText: dto?.altText,
         description: dto?.description,
       });
 
@@ -81,7 +81,7 @@ export class MediaService {
 
   async findAll(query: QueryDto): Promise<IPaginatedResult<Media>> {
     return await QB.paginate(this.mediaRepo, query, {
-      defaultSearchFields: ['original_filename', 'alt_text', 'description'],
+      defaultSearchFields: ['originalFilename', 'altText', 'description'],
     });
   }
 
@@ -90,7 +90,7 @@ export class MediaService {
     query: QueryDto,
   ): Promise<IPaginatedResult<Media>> {
     return await QB.paginate(this.mediaRepo, query, {
-      defaultSearchFields: ['original_filename', 'alt_text', 'description'],
+      defaultSearchFields: ['originalFilename', 'altText', 'description'],
       additionalWhere: { type },
     });
   }
@@ -101,7 +101,7 @@ export class MediaService {
     query: QueryDto,
   ): Promise<IPaginatedResult<Media>> {
     return await QB.paginate(this.mediaRepo, query, {
-      defaultSearchFields: ['original_filename', 'alt_text', 'description'],
+      defaultSearchFields: ['originalFilename', 'altText', 'description'],
       additionalWhere: { year, month },
     });
   }

@@ -23,11 +23,11 @@ export class User {
   @Column({ type: 'varchar', length: 255 })
   password: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  first_name?: string;
+  @Column({ type: 'varchar', length: 255, nullable: true, name: 'first_name' })
+  firstName?: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  last_name?: string;
+  @Column({ type: 'varchar', length: 255, nullable: true, name: 'last_name' })
+  lastName?: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   avatar?: string;
@@ -39,20 +39,38 @@ export class User {
   verified: boolean;
 
   @Exclude()
-  @Column({ type: 'varchar', length: 6, nullable: true })
-  verification_code?: string;
+  @Column({
+    type: 'varchar',
+    length: 6,
+    nullable: true,
+    name: 'verification_code',
+  })
+  verificationCode?: string;
 
   @Exclude()
-  @Column({ type: 'timestamp', nullable: true })
-  verification_code_expires_at?: Date;
+  @Column({
+    type: 'timestamp',
+    nullable: true,
+    name: 'verification_code_expires_at',
+  })
+  verificationCodeExpiresAt?: Date;
 
   @Exclude()
-  @Column({ type: 'varchar', length: 6, nullable: true })
-  password_reset_code?: string;
+  @Column({
+    type: 'varchar',
+    length: 6,
+    nullable: true,
+    name: 'password_reset_code',
+  })
+  passwordResetCode?: string;
 
   @Exclude()
-  @Column({ type: 'timestamp', nullable: true })
-  password_reset_code_expires_at?: Date;
+  @Column({
+    type: 'timestamp',
+    nullable: true,
+    name: 'password_reset_code_expires_at',
+  })
+  passwordResetCodeExpiresAt?: Date;
 
   @Column({
     type: 'enum',

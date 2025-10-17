@@ -54,7 +54,7 @@ export class CreateEventDto {
   @IsDate()
   @Type(() => Date)
   @IsNotEmpty({ message: 'Start date is required.' })
-  start_date: Date;
+  startDate: Date;
 
   /**
    * Event end date
@@ -63,15 +63,15 @@ export class CreateEventDto {
   @IsDate()
   @Type(() => Date)
   @IsOptional()
-  end_date?: Date;
+  endDate?: Date;
 
   @IsUUID()
   @IsOptional()
-  image_id?: string;
+  imageId?: string;
 
   @IsUrl({}, { message: 'Invalid registration URL.' })
   @IsOptional()
-  registration_url?: string;
+  registrationUrl?: string;
 
   /**
    * Whether the event is published

@@ -33,7 +33,7 @@ export class CreateBlogDto {
 
   @IsUUID()
   @IsOptional()
-  image_id?: string;
+  imageId?: string;
 
   @IsString()
   @IsOptional()
@@ -41,7 +41,7 @@ export class CreateBlogDto {
 
   @IsUUID()
   @IsOptional()
-  category_id?: string;
+  categoryId?: string;
 
   @IsBoolean()
   @IsOptional()

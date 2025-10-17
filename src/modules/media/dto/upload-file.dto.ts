@@ -4,7 +4,7 @@ export class UploadFileDto {
   @IsString()
   @IsOptional()
   @MaxLength(255)
-  alt_text?: string;
+  altText?: string;
 
   @IsString()
   @IsOptional()

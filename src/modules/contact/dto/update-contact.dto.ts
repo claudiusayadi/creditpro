@@ -17,5 +17,5 @@ export class UpdateContactDto {
    */
   @IsString()
   @IsOptional()
-  admin_notes?: string;
+  adminNotes?: string;
 }

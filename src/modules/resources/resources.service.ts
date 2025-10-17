@@ -93,7 +93,7 @@ export class ResourcesService {
   }
 
   async incrementDownloadCount(id: string): Promise<void> {
-    await this.resourceRepo.increment({ id }, 'download_count', 1);
+    await this.resourceRepo.increment({ id }, 'downloadCount', 1);
   }
 
   async remove(id: string): Promise<void> {

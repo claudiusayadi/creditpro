@@ -41,7 +41,7 @@ export class EventsService {
       defaultSearchFields: ['title', 'description', 'location'],
       additionalWhere: {
         published: true,
-        start_date: MoreThanOrEqual(new Date()),
+        startDate: MoreThanOrEqual(new Date()),
       },
     });
   }
@@ -51,9 +51,9 @@ export class EventsService {
       where: {
         published: true,
         featured: true,
-        start_date: MoreThanOrEqual(new Date()),
+        startDate: MoreThanOrEqual(new Date()),
       },
-      order: { start_date: 'ASC' },
+      order: { startDate: 'ASC' },
       take: 5,
     });
   }

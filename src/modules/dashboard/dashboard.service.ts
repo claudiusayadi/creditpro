@@ -321,15 +321,15 @@ export class DashboardService {
           ),
         this.resourceRepo
           .createQueryBuilder('resource')
-          .select(['resource.id', 'resource.title', 'resource.download_count'])
-          .orderBy('resource.download_count', 'DESC')
+          .select(['resource.id', 'resource.title', 'resource.downloadCount'])
+          .orderBy('resource.downloadCount', 'DESC')
           .limit(10)
           .getMany()
           .then((resources) =>
             resources.map((r) => ({
               id: r.id,
               title: r.title,
-              downloads: r.download_count,
+              downloads: r.downloadCount,
             })),
           ),
       ]);
@@ -425,7 +425,7 @@ export class DashboardService {
             title: b.title,
             createdAt: b.registry.createdAt,
             author:
-              `${b.author?.first_name} ${b.author?.last_name}`.trim() ||
+              `${b.author?.firstName} ${b.author?.lastName}`.trim() ||
               b.author.email,
           })),
         ),
@@ -452,7 +452,7 @@ export class DashboardService {
           items.map((e) => ({
             id: e.id,
             title: e.title,
-            startDate: e.start_date,
+            startDate: e.startDate,
             status: e.published ? 'Published' : 'Draft',
           })),
         ),
@@ -464,8 +464,8 @@ export class DashboardService {
         .then((items) =>
           items.map((u) => ({
             id: u.id,
-            first_name: u.first_name ?? 'Unknown',
-            last_name: u.last_name ?? 'Unknown',
+            first_name: u.firstName ?? 'Unknown',
+            last_name: u.lastName ?? 'Unknown',
             email: u.email,
             createdAt: u.registry.createdAt,
           })),
@@ -591,7 +591,7 @@ export class DashboardService {
         topResources: topResources.map((r) => ({
           id: r.id,
           title: r.title,
-          downloads: r.download_count,
+          downloads: r.downloadCount,
         })),
         recentContacts,
         activeUsers,

@@ -182,32 +182,32 @@ export class AuthService {
         id: true,
         email: true,
         password: true,
-        password_reset_code: true,
-        password_reset_code_expires_at: true,
+        passwordResetCode: true,
+        passwordResetCodeExpiresAt: true,
       },
     });
 
     if (!user) throw new NotFoundException('User not found');
 
-    if (!user.password_reset_code || !user.password_reset_code_expires_at) {
+    if (!user.passwordResetCode || !user.passwordResetCodeExpiresAt) {
       throw new BadRequestException(
         'No password reset code found. Please request a new one',
       );
     }
 
-    if (new Date() > user.password_reset_code_expires_at) {
+    if (new Date() > user.passwordResetCodeExpiresAt) {
       throw new BadRequestException(
         'Password reset code has expired. Please request a new one',
       );
     }
 
-    if (user.password_reset_code !== code) {
+    if (user.passwordResetCode !== code) {
       throw new BadRequestException('Invalid password reset code');
     }
 
     user.password = password;
-    user.password_reset_code = undefined;
-    user.password_reset_code_expires_at = undefined;
+    user.passwordResetCode = undefined;
+    user.passwordResetCodeExpiresAt = undefined;
     await this.usersRepo.save(user);
 
     // Invalidate refresh token
@@ -235,34 +235,34 @@ export class AuthService {
         id: true,
         email: true,
         verified: true,
-        verification_code: true,
-        verification_code_expires_at: true,
+        verificationCode: true,
+        verificationCodeExpiresAt: true,
       },
     });
 
     if (!user) throw new NotFoundException('User not found');
     if (user.verified) throw new BadRequestException('Email already verified');
 
-    if (!user.verification_code || !user.verification_code_expires_at) {
+    if (!user.verificationCode || !user.verificationCodeExpiresAt) {
       throw new BadRequestException(
         'No verification code found. Please request a new one',
       );
     }
 
-    if (new Date() > user.verification_code_expires_at) {
+    if (new Date() > user.verificationCodeExpiresAt) {
       throw new BadRequestException(
         'Verification code has expired. Please request a new one',
       );
     }
 
-    if (user.verification_code !== code) {
+    if (user.verificationCode !== code) {
       throw new BadRequestException('Invalid verification code');
     }
 
     // Mark user as verified
     user.verified = true;
-    user.verification_code = undefined;
-    user.verification_code_expires_at = undefined;
+    user.verificationCode = undefined;
+    user.verificationCodeExpiresAt = undefined;
     await this.usersRepo.save(user);
 
     return {
@@ -335,14 +335,14 @@ export class AuthService {
     const code = this.generateVerificationCode();
     const expiresAt = new Date(Date.now() + this.mail.verificationCodeTtl);
 
-    user.verification_code = code;
-    user.verification_code_expires_at = expiresAt;
+    user.verificationCode = code;
+    user.verificationCodeExpiresAt = expiresAt;
     await this.usersRepo.save(user);
 
     await this.emailService.sendVerificationEmail(
       user.email,
       code,
-      user.first_name,
+      user.firstName,
     );
   }
 
@@ -350,14 +350,14 @@ export class AuthService {
     const code = this.generateVerificationCode();
     const expiresAt = new Date(Date.now() + this.mail.verificationCodeTtl);
 
-    user.password_reset_code = code;
-    user.password_reset_code_expires_at = expiresAt;
+    user.passwordResetCode = code;
+    user.passwordResetCodeExpiresAt = expiresAt;
     await this.usersRepo.save(user);
 
     await this.emailService.sendPasswordResetEmail(
       user.email,
       code,
-      user.first_name,
+      user.firstName,
     );
   }
 

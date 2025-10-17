@@ -11,14 +11,14 @@ export class Media {
   @Column({ type: 'varchar', length: 255 })
   filename: string;
 
-  @Column({ type: 'varchar', length: 255 })
-  original_filename: string;
+  @Column({ type: 'varchar', length: 255, name: 'original_filename' })
+  originalFilename: string;
 
   @Column({ type: 'varchar', length: 500 })
   url: string;
 
-  @Column({ type: 'varchar', length: 100 })
-  mime_type: string;
+  @Column({ type: 'varchar', length: 100, name: 'mime_type' })
+  mimeType: string;
 
   @Column({ type: 'bigint' })
   size: number;
@@ -39,8 +39,8 @@ export class Media {
   @Column({ type: 'varchar', length: 2 })
   month: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  alt_text?: string;
+  @Column({ type: 'varchar', length: 255, nullable: true, name: 'alt_text' })
+  altText?: string;
 
   @Column({ type: 'varchar', length: 500, nullable: true })
   description?: string;

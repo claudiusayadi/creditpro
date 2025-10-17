@@ -3,8 +3,8 @@ import { CreateUserDto } from './create-user.dto';
 
 export class UpdateUserDto extends PartialType(
   PickType(CreateUserDto, [
-    'first_name',
-    'last_name',
+    'firstName',
+    'lastName',
     'avatar',
     'phone',
   ] as const),

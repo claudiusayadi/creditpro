@@ -51,7 +51,7 @@ export class CreateUserDto {
    */
   @IsString()
   @IsOptional()
-  first_name?: string;
+  firstName?: string;
 
   /**
    * User last name
@@ -59,7 +59,7 @@ export class CreateUserDto {
    */
   @IsString()
   @IsOptional()
-  last_name?: string;
+  lastName?: string;
 
   /**
    * User avatar URL

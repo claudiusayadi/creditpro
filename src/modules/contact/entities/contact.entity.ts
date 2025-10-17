@@ -31,8 +31,8 @@ export class Contact {
   })
   status: ContactStatus;
 
-  @Column({ type: 'text', nullable: true })
-  admin_notes?: string;
+  @Column({ type: 'text', nullable: true, name: 'admin_notes' })
+  adminNotes?: string;
 
   @Column(() => RegistryDates, { prefix: false })
   registry: RegistryDates;

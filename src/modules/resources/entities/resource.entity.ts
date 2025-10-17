@@ -42,8 +42,8 @@ export class Resource {
   @Column({ type: 'boolean', default: true })
   published: boolean;
 
-  @Column({ type: 'int', default: 0 })
-  download_count: number;
+  @Column({ type: 'int', default: 0, name: 'download_count' })
+  downloadCount: number;
 
   @Column(() => RegistryDates, { prefix: false })
   registry: RegistryDates;

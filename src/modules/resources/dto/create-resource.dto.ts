@@ -42,15 +42,15 @@ export class CreateResourceDto {
 
   @IsUUID()
   @IsNotEmpty({ message: 'File ID is required.' })
-  file_id: string;
+  fileId: string;
 
   @IsUUID()
   @IsOptional()
-  thumbnail_id?: string;
+  thumbnailId?: string;
 
   @IsUUID()
   @IsOptional()
-  category_id?: string;
+  categoryId?: string;
 
   /**
    * Whether the resource is published

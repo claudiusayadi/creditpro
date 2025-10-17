@@ -26,18 +26,23 @@ export class Event {
   @Column({ type: 'varchar', length: 255, nullable: true })
   location?: string;
 
-  @Column({ type: 'timestamp' })
-  start_date: Date;
+  @Column({ type: 'timestamp', name: 'start_date' })
+  startDate: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
-  end_date?: Date;
+  @Column({ type: 'timestamp', nullable: true, name: 'end_date' })
+  endDate?: Date;
 
   @ManyToOne(() => Media, { nullable: true })
   @JoinColumn({ name: 'image_id' })
   image?: Media;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  registration_url?: string;
+  @Column({
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+    name: 'registration_url',
+  })
+  registrationUrl?: string;
 
   @Column({ type: 'boolean', default: true })
   published: boolean;
