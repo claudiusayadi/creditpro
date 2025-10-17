@@ -424,7 +424,9 @@ export class DashboardService {
             id: b.id,
             title: b.title,
             createdAt: b.registry.createdAt,
-            author: b.author?.name ?? 'Unknown',
+            author:
+              `${b.author?.first_name} ${b.author?.last_name}`.trim() ||
+              b.author.email,
           })),
         ),
       this.contactRepo
@@ -462,7 +464,8 @@ export class DashboardService {
         .then((items) =>
           items.map((u) => ({
             id: u.id,
-            name: u.name ?? 'Unknown',
+            first_name: u.first_name ?? 'Unknown',
+            last_name: u.last_name ?? 'Unknown',
             email: u.email,
             createdAt: u.registry.createdAt,
           })),

@@ -46,12 +46,20 @@ export class CreateUserDto {
   password: string;
 
   /**
-   * User full name
-   * @example "Owolabi Omoninakuna"
+   * User first name
+   * @example "Owolabi"
    */
   @IsString()
   @IsOptional()
-  name?: string;
+  first_name?: string;
+
+  /**
+   * User last name
+   * @example "Omoninakuna"
+   */
+  @IsString()
+  @IsOptional()
+  last_name?: string;
 
   /**
    * User avatar URL
@@ -70,14 +78,6 @@ export class CreateUserDto {
   })
   @IsOptional()
   phone?: string;
-
-  /**
-   * User bio
-   * @example "A passionate software developer."
-   */
-  @IsString()
-  @IsOptional()
-  bio?: string;
 
   /**
    * User role

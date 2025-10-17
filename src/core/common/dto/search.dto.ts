@@ -1,4 +1,3 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsArray, IsOptional, IsString } from 'class-validator';
 
 /**
@@ -13,12 +12,10 @@ export class SearchDto {
   @IsOptional()
   search?: string;
 
-  @ApiPropertyOptional({
-    description:
-      'Fields to search in (if not provided, searches all searchable fields)',
-    example: ['name', 'email', 'description'],
-    type: [String],
-  })
+  /**
+   * Fields to search in (if not provided, searches all searchable fields)
+   * @example ['first_name', 'email', 'description']
+   */
   @IsArray()
   @IsString({ each: true })
   @IsOptional()

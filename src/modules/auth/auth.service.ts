@@ -339,7 +339,11 @@ export class AuthService {
     user.verification_code_expires_at = expiresAt;
     await this.usersRepo.save(user);
 
-    await this.emailService.sendVerificationEmail(user.email, code, user.name);
+    await this.emailService.sendVerificationEmail(
+      user.email,
+      code,
+      user.first_name,
+    );
   }
 
   private async sendPasswordResetCode(user: User): Promise<void> {
@@ -350,7 +354,11 @@ export class AuthService {
     user.password_reset_code_expires_at = expiresAt;
     await this.usersRepo.save(user);
 
-    await this.emailService.sendPasswordResetEmail(user.email, code, user.name);
+    await this.emailService.sendPasswordResetEmail(
+      user.email,
+      code,
+      user.first_name,
+    );
   }
 
   private generateVerificationCode(): string {

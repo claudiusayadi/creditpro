@@ -38,7 +38,7 @@ export class UsersService {
 
   public async findAll(query: QueryDto): Promise<IPaginatedResult<User>> {
     return await QB.paginate(this.usersRepo, query, {
-      defaultSearchFields: ['email', 'name'],
+      defaultSearchFields: ['email', 'first_name', 'last_name'],
     });
   }
 
@@ -57,10 +57,7 @@ export class UsersService {
   ): Promise<User> {
     if (currentUser.role !== UserRole.ADMIN) compareIds(currentUser.id, id);
 
-    const user = await this.usersRepo.preload({
-      id,
-      ...dto,
-    });
+    const user = await this.usersRepo.preload({ id, ...dto });
 
     if (!user) throw new NotFoundException('User not found');
     return this.usersRepo.save(user);

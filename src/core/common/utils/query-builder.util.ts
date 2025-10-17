@@ -169,7 +169,7 @@ export class QB {
 
     fields.forEach((field, index) => {
       const fieldOrder = orders[index] || sortOrder || 'ASC';
-      // Handle nested sorting (e.g., 'user.name')
+      // Handle nested sorting (e.g., 'user.first_name')
       if (field.includes('.')) {
         const parts = field.split('.');
         let current: Record<string, any> = order;

@@ -28,6 +28,7 @@ export class DashboardController {
   })
   @ApiOkResponse({
     description: 'Dashboard overview statistics retrieved successfully',
+    type: 'object',
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiForbiddenResponse({ description: 'Forbidden - Admin access required' })
@@ -41,7 +42,10 @@ export class DashboardController {
     description:
       'Retrieves analytics and trend data including content creation trends over the last 6 months and engagement metrics.',
   })
-  @ApiOkResponse({ description: 'Dashboard analytics retrieved successfully' })
+  @ApiOkResponse({
+    description: 'Dashboard analytics retrieved successfully',
+    type: 'object',
+  })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiForbiddenResponse({ description: 'Forbidden - Admin access required' })
   @Get('analytics')
@@ -54,7 +58,10 @@ export class DashboardController {
     description:
       'Retrieves recent activity across all modules including latest blogs, contacts, events, and users.',
   })
-  @ApiOkResponse({ description: 'Recent activity retrieved successfully' })
+  @ApiOkResponse({
+    description: 'Recent activity retrieved successfully',
+    type: 'object',
+  })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiForbiddenResponse({ description: 'Forbidden - Admin access required' })
   @Get('recent-activity')
